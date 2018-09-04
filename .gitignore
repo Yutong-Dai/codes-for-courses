@@ -1,0 +1,10 @@
+
+*.pyc
+
+*.hdf5
+
+[Python]IE534/hw1/.Rhistory
+
+[Python]IE534/hw1/.ipynb_checkpoints/HW1-checkpoint.ipynb
+
+[Python]IE534/.ipynb_checkpoints/Pytorch_Tutorial-checkpoint.ipynb
