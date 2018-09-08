@@ -4,6 +4,11 @@
 # @Author  : Yutong Dai
 # @Version : 0.9
 
+"""
+Remark this version of code only support stocahstic gradient descent with batch_size = 1.
+"""
+
+
 import numpy as np
 import h5py
 import time 
@@ -20,7 +25,7 @@ y_test = np.int32(np.hstack(np.array(data["y_test"])))
 data.close()
 
 class MnistModel():
-    def __init__(self, x_train, y_train, x_test, y_test, hidden_units=100, learning_rate=0.01, batch_size=20, num_epochs=5, seed=None):
+    def __init__(self, x_train, y_train, x_test, y_test, hidden_units=100, learning_rate=0.01, num_epochs=20, seed=None):
         self.x_train = x_train
         self.x_test = x_test
         self.y_train = y_train
@@ -29,7 +34,7 @@ class MnistModel():
         self.num_outputs = 10
         self.hidden_units = hidden_units
         self.learning_rate = learning_rate
-        self.batch_size = batch_size
+        self.batch_size = 1
         self.num_epochs = num_epochs
         self.params = {}
         self.gradients = {}
@@ -83,12 +88,12 @@ class MnistModel():
         ey = self.create_unit_matrix()
         temp = - (ey - self.forward_results["S"])
         self.gradients["db2"] = np.mean(temp, axis=1, keepdims=True)
-        self.gradients["dC"] = np.dot(temp, self.forward_results["H"].T) / self.batch_size
+        self.gradients["dC"] = np.dot(temp, self.forward_results["H"].T) 
         self.gradients["dH"] = np.mean(np.dot(self.params["C"].T, temp), axis=1, keepdims=True)
         H_gradient = np.apply_along_axis(self.activation_gradient, 0, self.forward_results["Z"])
         temp2 = np.multiply(self.gradients["dH"], H_gradient)
         self.gradients["db1"] = np.mean(temp2, axis=1, keepdims=True)
-        self.gradients["dW"] = np.dot(temp2, self.x_train_sub_samples.T) / self.batch_size
+        self.gradients["dW"] = np.dot(temp2, self.x_train_sub_samples.T) 
 
     def train(self):
         for epoch in range(self.num_epochs):
@@ -120,7 +125,7 @@ class MnistModel():
 
 if __name__ == "__main__":
     nn = MnistModel(x_train, y_train, x_test, 
-y_test, hidden_units=100, batch_size=1, learning_rate=0.01, num_epochs=5, seed=1234)
+y_test, hidden_units=100, learning_rate=0.01, num_epochs=10, seed=1234)
     start = time.time()
     nn.train()
     end = time.time()

@@ -46,33 +46,33 @@ where $e_y$ is the unit vector, which y-th coordinate equals to 1 and 0 elsewher
 ## Algorithm
 Mini-Batch Stochastic gradient algorithm for updating $\theta = \{W, b_1, C, b_2\}$:
 
-* Step1: Specify batch_size $M$, activation function $\sigma(z)$, and initialize $W^{(0)}, b_1^{(0)}, C^{(0)}, b_2^{(0)}$;
+* Step1: Specify batch_size $M=1$, activation function $\sigma(z)=Relu(z)$, and initialize $W^{(0)}, b_1^{(0)}, C^{(0)}, b_2^{(0)}$;
 
 * Step2: At iteration $t$:
     
-    * a. Select $M$ data samples $\{X^{(t,m)},y^{(t,m)}\}_{m=1}^M$ uniform at random from the full dataset $\{X^{(n)},y^{(n)}\}_{n=1}^N$ 
+    * a. Select a data sample $\{X^{(t)},y^{(t)}\}$ uniform at random from the full dataset $\{X^{(n)},y^{(n)}\}_{n=1}^N$ 
     
     * b. Compute forward-propagation:
         
-        * $Z^{(t,m)}=W^{(t)}X^{(t,m)}+b_1^{(t)}$
+        * $Z^{(t)}=W^{(t)}X^{(t)}+b_1^{(t)}$
         
-        * $H^{(t,m)}=\sigma(Z^{(t,m)})$
+        * $H^{(t)}=\sigma(Z^{(t)})=\max(Z^{(t)}, 0)$(element-wise operation)
         
-        * $U^{(t,m)} = C^{(t)}H^{(t,m)} + b_2^{(t)}$
+        * $U^{(t)} = C^{(t)}H^{(t)} + b_2^{(t)}$
         
-        * $S^{(t,m)}=F_{softmax}(U^{(t,m)})$
+        * $S^{(t)}=F_{softmax}(U^{(t)})$
     
     * c. Compute backward-propagation:
         
-        * $\frac{\partial \rho}{\partial b_2} = \frac{1}{M}\sum_{m=1}^M e_{y^{(t,m)}} - S^{(t,m)}$ 
+        * $\frac{\partial \rho}{\partial b_2} =  e_{y^{(t)}} - S^{(t)}$ 
         
-        * $\frac{\partial \rho}{\partial C} =   \frac{1}{M}\sum_{m=1}^M  (e_{y^{(t,m)}}  - S^{(t,m)}){H^{(t,m)}}^T$
+        * $\frac{\partial \rho}{\partial C} =   (e_{y^{(t)}}  - S^{(t)}){H^{(t)}}^T$
         
-        * $\frac{\partial \rho}{\partial H} = \frac{1}{M}\sum_{m=1}^M C^T(e_{y^{(t,m)}} - S^{(t,m)})$
+        * $\frac{\partial \rho}{\partial H} =  C^T(e_{y^{(t)}} - S^{(t)})$
         
-        * $\frac{\partial \rho}{\partial b_1} = \frac{1}{M}\sum_{m=1}^M \frac{\partial \rho}{\partial H} \odot \sigma'(Z^{(t,m)})$
+        * $\frac{\partial \rho}{\partial b_1} =  \frac{\partial \rho}{\partial H} \odot \sigma'(Z^{(t)})$, where $\sigma'(Z^{(t)})=1 \text(if Z>1) 0 \text(o.w)$(element-wise operation)
         
-        * $\frac{\partial \rho}{\partial W} =  \frac{1}{M}\sum_{m=1}^M \big(\frac{\partial \rho}{\partial H} \odot \sigma'(Z^{(t,m)})\big){X^{(t,m)}}^T$
+        * $\frac{\partial \rho}{\partial W} =  \big(\frac{\partial \rho}{\partial H} \odot \sigma'(Z^{(t)})\big){X^{(t)}}^T$
     
     * d. Given learning rate $\eta_t$, update parameters as follows:
         
@@ -86,53 +86,12 @@ Mini-Batch Stochastic gradient algorithm for updating $\theta = \{W, b_1, C, b_2
 
 * Step3: Repeat Step2 until some convergence criteria is met.
 
-To avoid unnecessary `for-loop` we can vectoruize the above algorithm. 
-
-* Step1: Specify batch_size $M$, activation function $\sigma(z)$, and initialize $W^{(0)}, b_1^{(0)}, C^{(0)}, b_2^{(0)}$;
-
-* Step2: At iteration $t$:
-    
-    * a. Select $M$ data samples $\{X^{(t,m)},y^{(t,m)}\}_{m=1}^M$ uniform at random from the full dataset $\{X^{(n)},y^{(n)}\}_{n=1}^N$ 
-    
-    * b. Compute forward-propagation:
-        
-        * $Z^{(t)}=W^{(t)}X^{(t)}+b_1^{(t)}$, where $X^{(t)} = (X^{(t,1)},...,X^{(t,M)})$ and the summation on $b_1$ will be column-wise.
-        
-        * $H^{(t)}=\sigma(Z^{(t)})$, where $H^{(t)} = (H^{(t,1)},...,H^{(t,M)})$ and $\sigma(.)$ is element wise operation.
-        
-        * $U^{(t)} = C^{(t)}H^{(t)} + b_2^{(t)}$
-        
-        * $S^{(t)}=F_{softmax}(U^{(t)})$, where the $F_{softmax}$ is column-wise operation.
-    
-    * c. Compute backward-propagation:
-        
-        * $\frac{\partial \rho}{\partial b_2} = \text{np.mean}(e_{y^{(t)}} - S^{(t)}, \text{axis=1})$
-        
-        * $\frac{\partial \rho}{\partial C} =  \frac{1}{M} (e_{y^{(t)}}  - S^{(t)}){H^{(t)}}^T$
-        
-        * $\frac{\partial \rho}{\partial H} = \text{np.mean}(C^T(e_{y^{(t)}} - S^{(t)}), \text{axis=1})$
-        
-        * $\frac{\partial \rho}{\partial b_1} = \text{np.mean}(\frac{\partial \rho}{\partial H} \odot \sigma'(Z^{(t)}), \text{axis=1})$
-        
-        * $\frac{\partial \rho}{\partial W} =  \frac{1}{M}(\big(\frac{\partial \rho}{\partial H} \odot \sigma'(Z^{(t)})\big){X^{(t)}}^T)$
-    
-    * d. Given learning rate $\eta_t$, update parameters as follows:
-        
-        * $b_2^{(t+1)}) \leftarrow b_2^{(t)}) + \eta_t \frac{\partial \rho}{\partial b_2}$
-        
-        * $C^{(t+1)}) \leftarrow C^{(t)}) + \eta_t \frac{\partial \rho}{\partial C}$
-        
-        * $b_1^{(t+1)}) \leftarrow b_1^{(t)}) + \eta_t \frac{\partial \rho}{\partial b_1}$
-        
-        * $W^{(t+1)}) \leftarrow W^{(t)} + \eta_t \frac{\partial \rho}{\partial W}$
-
-* Step3: Repeat Step2 until some convergence criteria is met.
 
 # Numerical Experiment
 
 ```
-n n = MnistModel(x_train, y_train, x_test, 
-y_test, hidden_units=100, batch_size=1, learning_rate=0.01, num_epochs=5, seed=1234)
+nn = MnistModel(x_train, y_train, x_test, 
+y_test, hidden_units=100, learning_rate=0.01, num_epochs=20, seed=1234)
 
 # training sample size: [(60000, 784)]
 # test sample size:[(10000, 784)]
@@ -141,27 +100,43 @@ y_test, hidden_units=100, batch_size=1, learning_rate=0.01, num_epochs=5, seed=1
 ```
 
 ```
-start = time.time()
+
 nn.train()
-end = time.time()
 
-# epoch:1 | Training Accuracy:[0.9296]
-# epoch:2 | Training Accuracy:[0.96985]
-# epoch:3 | Training Accuracy:[0.9783333333333334]
-# epoch:4 | Training Accuracy:[0.9819166666666667]
-# epoch:5 | Training Accuracy:[0.98605]
-```
-
-```
-print("Running Time: [{}] second".format(end - start))
-
-# Running Time: [672.2338092327118] second
+training sample size: [(60000, 784)]
+test sample size:[(10000, 784)]
+hidden units number: [100]
+batch_size:[1]
+epoch:1 | Training Accuracy:[0.9299666666666667]
+epoch:2 | Training Accuracy:[0.9691]
+epoch:3 | Training Accuracy:[0.9773833333333334]
+epoch:4 | Training Accuracy:[0.9828166666666667]
+epoch:5 | Training Accuracy:[0.9845]
+epoch:6 | Training Accuracy:[0.9875166666666667]
+epoch:7 | Training Accuracy:[0.9939333333333333]
+epoch:8 | Training Accuracy:[0.99495]
+epoch:9 | Training Accuracy:[0.9957]
+epoch:10 | Training Accuracy:[0.9963166666666666]
+epoch:11 | Training Accuracy:[0.9969166666666667]
+epoch:12 | Training Accuracy:[0.9970833333333333]
+epoch:13 | Training Accuracy:[0.9968333333333333]
+epoch:14 | Training Accuracy:[0.9972833333333333]
+epoch:15 | Training Accuracy:[0.9967833333333334]
+epoch:16 | Training Accuracy:[0.9971666666666666]
+epoch:17 | Training Accuracy:[0.9975333333333334]
+epoch:18 | Training Accuracy:[0.9972]
+epoch:19 | Training Accuracy:[0.9976333333333334]
+epoch:20 | Training Accuracy:[0.9976]
 ```
 
 ```
 print("Test Accuracy: [{}]".format(nn.test()))
 
-# Test Accuracy: [0.975]
+# Test Accuracy: [0.982]
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("./result.png")
 ```
 
 
