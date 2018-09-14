@@ -136,5 +136,5 @@ if __name__ == "__main__":
     start = time.time()
     myCNN.train()
     end = time.time()
-    print("Total time used for training with 10 epochs is [{}] seconds".format(end - start))
+    print("Total time used for training with 5 epochs is [{}] seconds".format(end - start))
     myCNN.test()
