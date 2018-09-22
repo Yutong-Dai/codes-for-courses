@@ -8,8 +8,23 @@ from torchvision import transforms
 import h5py
 import copy
 import time
+import logging
+
+log_level=logging.INFO
+logger = logging.getLogger()
+logger.setLevel(log_level)
+handler = logging.FileHandler("task.log")
+handler.setLevel(log_level)
+formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+logger.info("torch version: {}".format(torch.__version__))
+logger.info("loading data...")
+
 file_name = "../data/CIFAR10.hdf5"
 data = h5py.File(file_name, "r")
+# get metadata for data: [n for n in data.keys()]
 x_train = np.float32(data["X_train"][:]).reshape(-1, 3, 32, 32)
 y_train = np.int32(np.array(data["Y_train"]))
 x_test = np.float32(data["X_test"][:]).reshape(-1, 3, 32, 32)
@@ -30,6 +45,7 @@ def random_flip(x_train,y_train,portion=0.5, direction=2):
     new[idx,[0],:,:] = np.flip(new[idx,[0],:,:],direction)
     new[idx,[1],:,:] = np.flip(new[idx,[1],:,:],direction)
     new[idx,[2],:,:] = np.flip(new[idx,[2],:,:],direction)
+    #new = torch.from_numpy(new)
     return y_train, new
 
 class CNN_torch(nn.Module):
@@ -95,8 +111,13 @@ if use_cuda:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
 batch_size = 100
-num_epoch = 30
+num_epoch = 10
 train_loss = []; train_accuracy_epcoh = []
+
+x_train = x_train[0:1000]
+y_train = y_train[0:1000]
+x_test = x_test[0:100]
+y_test = y_test[0:100]
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 
@@ -132,4 +153,25 @@ for epoch in range(num_epoch):
         accuracy = (float(prediction.eq(target.data).sum()) / float(batch_size))
         train_accuracy.append(accuracy)
     train_accuracy_epcoh.append(np.mean(train_accuracy)) 
+    logger.info("Epoch: {} | Loss: {} | Accuracy::{}".format(epoch+1, train_loss[-1], train_accuracy_epcoh[-1]))
     print("Epoch: {} | Loss: {} | Accuracy::{}".format(epoch+1, train_loss[-1], train_accuracy_epcoh[-1]))
+
+torch.save(model, 'saved_model_state.pt')
+logger.info("model saved!")
+
+model.eval()
+test_accuracy = []
+for i in range(0, L_Y_test, batch_size):
+    x_test_batch = torch.FloatTensor(x_test[i:i+batch_size, :])
+    y_test_batch = torch.LongTensor(y_test[i:i+batch_size])
+    if use_cuda:
+        data, target = Variable(x_test_batch).cuda(), Variable(y_test_batch).cuda()
+    else:
+        data, target = Variable(x_test_batch), Variable(y_test_batch)
+    output = model(data)
+    loss = F.nll_loss(output, target)
+    prediction = output.data.max(1)[1]
+    accuracy = (float(prediction.eq(target.data).sum()) / float(batch_size))
+    test_accuracy.append(accuracy)
+accuracy_test = np.mean(test_accuracy)
+logger.info("trained on [{}] epoch, with test accuracy [{}]".format(num_epoch, accuracy_test))
