@@ -10,6 +10,8 @@ import h5py
 import copy
 import time
 import logging
+import os
+import shutil
 
 log_level=logging.INFO
 logger = logging.getLogger()
@@ -49,6 +51,10 @@ def random_flip(x_train,y_train,portion=0.5, direction=2):
     #new = torch.from_numpy(new)
     return y_train, new
 
+def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
+    torch.save(state, filename)
+    if is_best:
+        shutil.copyfile(filename, 'model_best.pth.tar')
 class CNN_torch(nn.Module):
     def __init__(self):
         super(CNN_torch, self).__init__()
@@ -68,37 +74,24 @@ class CNN_torch(nn.Module):
         self.fc1 = nn.Linear(64 * 4 * 4, 500)
         self.fc2 = nn.Linear(500, 10)
     def forward(self, x):
-        #print("con0: x shape{}".format(x.shape))
         x = F.relu(self.conv1(x))
-        #print("con1: x shape{}".format(x.shape))
         x = self.batch_norm1(x)
         x = F.relu(self.conv2(x))
-        #print("con2: x shape{}".format(x.shape))
         x = F.dropout2d(F.max_pool2d(x, kernel_size=2, stride=2), p=0.25)
-        #print("maxpool1: x shape{}".format(x.shape))
         x = F.relu(self.conv3(x))
-        #print("con3: x shape{}".format(x.shape))
         x = self.batch_norm2(x)
         x = F.relu(self.conv4(x))
-        #print("con4: x shape{}".format(x.shape))
         x = F.dropout2d(F.max_pool2d(x, kernel_size=2, stride=2), p=0.25)
-        #print("maxpool2: x shape{}".format(x.shape))
         x = F.relu(self.conv5(x))
-        #print("con5: x shape{}".format(x.shape))
         x = self.batch_norm3(x)
         x = F.relu(self.conv6(x))
-        #print("con6: x shape{}".format(x.shape))
         x = F.dropout2d(x, p=0.25)
         x = F.relu(self.conv7(x))
-        #print("con7: x shape{}".format(x.shape))
         x = self.batch_norm4(x)
         x = F.relu(self.conv8(x))
-        #print("con8: x shape{}".format(x.shape))
         x = self.batch_norm5(x)
         x = F.dropout2d(x, p=0.25)
-        #print("final: x shape{}".format(x.shape))
         x = x.view(-1, self.fc1.in_features)
-        #print("flatten: x shape{}".format(x.shape))
         x = self.fc1(x)
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
@@ -114,13 +107,30 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
 batch_size = 100
 num_epoch = 30
-train_loss = []; train_accuracy_epcoh = []
-
+train_loss = []; train_accuracy_epoch = []
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 print("training...")
+best_train_acc = 0
+start_epoch = 0
+resume = './checkpoint.pth.tar'
+if resume:
+    if os.path.isfile(resume):
+        print("=> loading checkpoint '{}'".format(resume))
+        checkpoint = torch.load(resume)
+        start_epoch = checkpoint['epoch']
+        best_train_acc = checkpoint['best_train_acc']
+        train_loss = checkpoint['train_loss']
+        train_accuracy_epoch = checkpoint['train_accuracy_epoch']
+        model.load_state_dict(checkpoint['state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        print("=> loaded checkpoint '{}' (epoch {})"
+              .format(resume, checkpoint['epoch']))
+    else:
+        print("=> no checkpoint found at '{}'".format(resume))
+
 model.train()
-for epoch in range(num_epoch):
+for epoch in range(start_epoch, num_epoch):
     index_permutation = np.random.permutation(L_Y_train)
     x_train = x_train[index_permutation, :]
     y_train = y_train[index_permutation]
@@ -146,16 +156,30 @@ for epoch in range(num_epoch):
         else:
             train_loss.append(loss.data[0])
         # update parameters
+        if(epoch>8):
+            for group in optimizer.param_groups:
+                for p in group['params']:
+                    state = optimizer.state[p]
+                    if(state['step']>=1024):
+                        state['step'] = 1000
         optimizer.step()
         prediction = output.data.max(1)[1]
         accuracy = (float(prediction.eq(target.data).sum()) / float(batch_size))
         train_accuracy.append(accuracy)
-    train_accuracy_epcoh.append(np.mean(train_accuracy)) 
-    logger.info("Epoch: {} | Loss: {} | Accuracy::{}".format(epoch+1, train_loss[-1], train_accuracy_epcoh[-1]))
-    print("Epoch: {} | Loss: {} | Accuracy::{}".format(epoch+1, train_loss[-1], train_accuracy_epcoh[-1]))
-
-torch.save(model, 'saved_model_state.pt')
-logger.info("model saved!")
+    train_accuracy_epoch.append(np.mean(train_accuracy)) 
+    logger.info("Epoch: {} | Loss: {} | Accuracy::{}".format(epoch+1, train_loss[-1], train_accuracy_epoch[-1]))
+    print("Epoch: {} | Loss: {} | Accuracy::{}".format(epoch+1, train_loss[-1], train_accuracy_epoch[-1]))
+    is_best = train_accuracy_epoch[-1] > best_train_acc
+    best_train_acc = max(best_train_acc, train_accuracy_epoch[-1])
+    save_checkpoint({
+            'epoch': epoch + 1,
+            'state_dict': model.state_dict(),
+            'best_train_acc': best_train_acc,
+            'train_loss': train_loss,
+            'train_accuracy_epoch': train_accuracy_epoch,
+            'optimizer' : optimizer.state_dict(),}, is_best)
+    if is_best:
+        logger.info("Best parameters is updated!")
 
 model.eval()
 test_accuracy = []
