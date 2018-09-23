@@ -1,0 +1,48 @@
+2018-09-22 17:42:24,417 - [INFO] - torch version: 0.3.0
+2018-09-22 17:42:24,417 - [INFO] - loading data...
+2018-09-22 17:43:29,925 - [INFO] - Epoch: 1 | Loss: 1.310076117515564 | Accuracy::0.46238
+2018-09-22 17:43:30,081 - [INFO] - Best parameters is updated!
+2018-09-22 17:44:20,465 - [INFO] - Epoch: 2 | Loss: 0.7733752727508545 | Accuracy::0.6727
+2018-09-22 17:44:20,563 - [INFO] - Best parameters is updated!
+2018-09-22 17:45:09,268 - [INFO] - Epoch: 3 | Loss: 0.8667066097259521 | Accuracy::0.74852
+2018-09-22 17:45:09,348 - [INFO] - Best parameters is updated!
+2018-09-22 17:45:59,654 - [INFO] - Epoch: 4 | Loss: 0.6155720353126526 | Accuracy::0.78472
+2018-09-22 17:45:59,755 - [INFO] - Best parameters is updated!
+2018-09-22 17:46:50,114 - [INFO] - Epoch: 5 | Loss: 0.478678822517395 | Accuracy::0.81162
+2018-09-22 17:46:50,220 - [INFO] - Best parameters is updated!
+2018-09-22 17:47:40,594 - [INFO] - Epoch: 6 | Loss: 0.5366249680519104 | Accuracy::0.8334600000000001
+2018-09-22 17:47:40,693 - [INFO] - Best parameters is updated!
+2018-09-22 17:48:31,016 - [INFO] - Epoch: 7 | Loss: 0.677316427230835 | Accuracy::0.71838
+2018-09-22 17:49:19,791 - [INFO] - Epoch: 8 | Loss: 0.5570617914199829 | Accuracy::0.84722
+2018-09-22 17:49:19,878 - [INFO] - Best parameters is updated!
+2018-09-22 17:50:08,515 - [INFO] - Epoch: 9 | Loss: 0.4002855718135834 | Accuracy::0.8734000000000001
+2018-09-22 17:50:08,602 - [INFO] - Best parameters is updated!
+2018-09-22 17:50:58,929 - [INFO] - Epoch: 10 | Loss: 0.7161683440208435 | Accuracy::0.77744
+2018-09-22 17:51:49,400 - [INFO] - Epoch: 11 | Loss: 0.49755004048347473 | Accuracy::0.81674
+2018-09-22 17:52:39,878 - [INFO] - Epoch: 12 | Loss: 0.23092609643936157 | Accuracy::0.87024
+2018-09-22 17:53:28,669 - [INFO] - Epoch: 13 | Loss: 0.3864538073539734 | Accuracy::0.9073
+2018-09-22 17:53:28,778 - [INFO] - Best parameters is updated!
+2018-09-22 17:54:19,094 - [INFO] - Epoch: 14 | Loss: 0.3977225124835968 | Accuracy::0.8212200000000001
+2018-09-22 17:55:09,560 - [INFO] - Epoch: 15 | Loss: 0.44424372911453247 | Accuracy::0.8520800000000001
+2018-09-22 17:55:58,363 - [INFO] - Epoch: 16 | Loss: 0.19580140709877014 | Accuracy::0.92028
+2018-09-22 17:55:58,475 - [INFO] - Best parameters is updated!
+2018-09-22 17:56:48,797 - [INFO] - Epoch: 17 | Loss: 0.30435994267463684 | Accuracy::0.8980799999999999
+2018-09-22 17:57:39,305 - [INFO] - Epoch: 18 | Loss: 0.2583535313606262 | Accuracy::0.9148399999999999
+2018-09-22 17:58:28,110 - [INFO] - Epoch: 19 | Loss: 0.1366908848285675 | Accuracy::0.9449799999999999
+2018-09-22 17:58:28,225 - [INFO] - Best parameters is updated!
+2018-09-22 17:59:18,566 - [INFO] - Epoch: 20 | Loss: 0.2577490508556366 | Accuracy::0.84388
+2018-09-22 18:00:09,058 - [INFO] - Epoch: 21 | Loss: 0.12290289252996445 | Accuracy::0.91362
+2018-09-22 18:00:59,542 - [INFO] - Epoch: 22 | Loss: 0.40796828269958496 | Accuracy::0.8657999999999999
+2018-09-22 18:01:49,994 - [INFO] - Epoch: 23 | Loss: 0.3450239598751068 | Accuracy::0.88774
+2018-09-22 18:02:38,761 - [INFO] - Epoch: 24 | Loss: 0.24872513115406036 | Accuracy::0.948
+2018-09-22 18:02:38,881 - [INFO] - Best parameters is updated!
+2018-09-22 18:03:27,482 - [INFO] - Epoch: 25 | Loss: 0.0872989371418953 | Accuracy::0.9649200000000001
+2018-09-22 18:03:27,601 - [INFO] - Best parameters is updated!
+2018-09-22 18:04:16,174 - [INFO] - Epoch: 26 | Loss: 0.11069934815168381 | Accuracy::0.9676800000000001
+2018-09-22 18:04:16,303 - [INFO] - Best parameters is updated!
+2018-09-22 18:05:04,870 - [INFO] - Epoch: 27 | Loss: 0.1300189048051834 | Accuracy::0.9725600000000001
+2018-09-22 18:05:04,974 - [INFO] - Best parameters is updated!
+2018-09-22 18:05:55,245 - [INFO] - Epoch: 28 | Loss: 0.12477043271064758 | Accuracy::0.92004
+2018-09-22 18:06:45,654 - [INFO] - Epoch: 29 | Loss: 0.2987133860588074 | Accuracy::0.8765
+2018-09-22 18:07:36,091 - [INFO] - Epoch: 30 | Loss: 0.3045714497566223 | Accuracy::0.93266
+2018-09-22 18:07:38,958 - [INFO] - trained on [30] epoch, with test accuracy [0.8533]

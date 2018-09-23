@@ -103,7 +103,6 @@ if use_cuda:
     model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
     print(torch.cuda.device_count())
     cudnn.benchmark = True
-criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters())
 batch_size = 100
 num_epoch = 30
