@@ -1,0 +1,557 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Yutong Dai report}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{model-configuration}{%
+\section{Model Configuration}\label{model-configuration}}
+
+\textbf{CNN Architecture:} The same as described in the lecture notes.
+
+\begin{itemize}
+\tightlist
+\item
+  convolution(channel=64, filter\_size=4, stride=1, padding=2)
+  -\textgreater{} Relu -\textgreater{} Batch normalization
+\item
+  convolution(channel=64, filter\_size=4, stride=1, padding=2)
+  -\textgreater{} Relu -\textgreater{} Maxpooling(stride =2.
+  kernel\_size = 2)
+\item
+  Dropout(probability=0.25)
+\item
+  convolution(channel=64, filter\_size=4, stride=1, padding=2)
+  -\textgreater{} Relu -\textgreater{} Batch normalization
+\item
+  convolution(channel=64, filter\_size=4, stride=1, padding=2)
+  -\textgreater{} Maxpooling(stride =2. kernel\_size = 2)
+\item
+  Dropout(probability=0.25)
+\item
+  convolution(channel=64, filter\_size=4, stride=1, padding=2)
+  -\textgreater{} Relu -\textgreater{} Batch normalization
+\item
+  convolution(channel=64, filter\_size=3, stride=1, padding=0)
+  -\textgreater{} Relu
+\item
+  Dropout(probability=0.25)
+\item
+  convolution(channel=64, filter\_size=3, stride=1, padding=0)
+  -\textgreater{} Relu -\textgreater{} Batch normalization
+\item
+  convolution(channel=64, filter\_size=3, stride=1, padding=0)
+  -\textgreater{} Relu -\textgreater{} Batch normalization
+\item
+  Dropout
+\item
+  Fully connected layer(hidden\_units=500)
+\item
+  Fully connected layer(hidden\_units=500)
+\item
+  Softmax
+\end{itemize}
+
+\textbf{Batch Size:}100
+
+\textbf{Optimizer:} Adam
+
+\textbf{Data Augmentation:}
+
+\begin{itemize}
+\tightlist
+\item
+  With 0.5 probability employ the data augmentation.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Randomly flip 60\% of mini-batch training samples either
+    horizontally or vertically.
+  \item
+    Randomly rotate 60\% of mini-batch training samples 90 degrees.
+  \end{itemize}
+\end{itemize}
+
+    \hypertarget{experiment-results}{%
+\section{Experiment Results}\label{experiment-results}}
+
+\textbf{Note my code supports \texttt{resume} functionality}, which
+means you can training your cnn based previous stored results.
+
+First, I trained my model on 30 epochs, which has 80\% test accuracy. In
+order to get higher test accuracy, I resumed training 3 times, each with
+additional 5 epochs. So finally:
+
+\textbf{For 45 epochs, I obtain 85.43\% training accuracy.} The training
+log is given below.
+
+    \begin{verbatim}
+training...
+=> no checkpoint found at './checkpoint.pth.tar'
+2018-09-26 00:40:33,767 - [INFO] - torch version: 0.3.0
+2018-09-26 00:40:33,784 - [INFO] - loading data...
+2018-09-26 00:41:38,176 - [INFO] - Epoch: 1 | Loss: 1.260013461112976 | Accuracy::0.42578
+2018-09-26 00:41:38,310 - [INFO] - Best parameters is updated!
+2018-09-26 00:42:28,968 - [INFO] - Epoch: 2 | Loss: 1.296244502067566 | Accuracy::0.4698
+2018-09-26 00:42:29,051 - [INFO] - Best parameters is updated!
+2018-09-26 00:43:18,118 - [INFO] - Epoch: 3 | Loss: 0.8326022624969482 | Accuracy::0.60864
+2018-09-26 00:43:18,222 - [INFO] - Best parameters is updated!
+2018-09-26 00:44:07,194 - [INFO] - Epoch: 4 | Loss: 1.0159904956817627 | Accuracy::0.6705399999999999
+2018-09-26 00:44:07,294 - [INFO] - Best parameters is updated!
+2018-09-26 00:44:57,909 - [INFO] - Epoch: 5 | Loss: 1.0425361394882202 | Accuracy::0.59338
+2018-09-26 00:45:48,699 - [INFO] - Epoch: 6 | Loss: 1.0083378553390503 | Accuracy::0.63738
+2018-09-26 00:46:37,809 - [INFO] - Epoch: 7 | Loss: 0.8012216687202454 | Accuracy::0.7139
+2018-09-26 00:46:37,913 - [INFO] - Best parameters is updated!
+2018-09-26 00:47:26,905 - [INFO] - Epoch: 8 | Loss: 0.7867785692214966 | Accuracy::0.7468199999999999
+2018-09-26 00:47:27,008 - [INFO] - Best parameters is updated!
+2018-09-26 00:48:17,627 - [INFO] - Epoch: 9 | Loss: 0.9155967831611633 | Accuracy::0.7534
+2018-09-26 00:48:17,734 - [INFO] - Best parameters is updated!
+2018-09-26 00:49:08,430 - [INFO] - Epoch: 10 | Loss: 0.5476292967796326 | Accuracy::0.7746200000000001
+2018-09-26 00:49:08,553 - [INFO] - Best parameters is updated!
+2018-09-26 00:49:59,315 - [INFO] - Epoch: 11 | Loss: 0.7429620623588562 | Accuracy::0.78534
+2018-09-26 00:49:59,403 - [INFO] - Best parameters is updated!
+2018-09-26 00:50:50,160 - [INFO] - Epoch: 12 | Loss: 0.7952980995178223 | Accuracy::0.66768
+2018-09-26 00:51:40,980 - [INFO] - Epoch: 13 | Loss: 0.604600191116333 | Accuracy::0.78676
+2018-09-26 00:51:41,146 - [INFO] - Best parameters is updated!
+2018-09-26 00:52:30,233 - [INFO] - Epoch: 14 | Loss: 0.5061242580413818 | Accuracy::0.80578
+2018-09-26 00:52:30,343 - [INFO] - Best parameters is updated!
+2018-09-26 00:53:21,051 - [INFO] - Epoch: 15 | Loss: 0.6744173169136047 | Accuracy::0.80708
+2018-09-26 00:53:21,605 - [INFO] - Best parameters is updated!
+2018-09-26 00:54:10,660 - [INFO] - Epoch: 16 | Loss: 0.5296404957771301 | Accuracy::0.81908
+2018-09-26 00:54:10,769 - [INFO] - Best parameters is updated!
+2018-09-26 00:54:59,785 - [INFO] - Epoch: 17 | Loss: 0.5702775716781616 | Accuracy::0.82688
+2018-09-26 00:54:59,877 - [INFO] - Best parameters is updated!
+2018-09-26 00:55:48,908 - [INFO] - Epoch: 18 | Loss: 0.5297756791114807 | Accuracy::0.8341599999999999
+2018-09-26 00:55:49,022 - [INFO] - Best parameters is updated!
+2018-09-26 00:56:38,040 - [INFO] - Epoch: 19 | Loss: 0.44035109877586365 | Accuracy::0.83974
+2018-09-26 00:56:38,155 - [INFO] - Best parameters is updated!
+2018-09-26 00:57:28,850 - [INFO] - Epoch: 20 | Loss: 0.5621123313903809 | Accuracy::0.8280599999999999
+2018-09-26 00:58:17,992 - [INFO] - Epoch: 21 | Loss: 0.6654871106147766 | Accuracy::0.84884
+2018-09-26 00:58:18,106 - [INFO] - Best parameters is updated!
+2018-09-26 00:59:08,746 - [INFO] - Epoch: 22 | Loss: 0.7074993848800659 | Accuracy::0.6948
+2018-09-26 00:59:57,873 - [INFO] - Epoch: 23 | Loss: 0.4395642876625061 | Accuracy::0.8431199999999999
+2018-09-26 01:00:46,992 - [INFO] - Epoch: 24 | Loss: 0.3320717513561249 | Accuracy::0.85696
+2018-09-26 01:00:47,094 - [INFO] - Best parameters is updated!
+2018-09-26 01:01:36,155 - [INFO] - Epoch: 25 | Loss: 0.4970552325248718 | Accuracy::0.86164
+2018-09-26 01:01:36,274 - [INFO] - Best parameters is updated!
+2018-09-26 01:02:25,312 - [INFO] - Epoch: 26 | Loss: 0.48153769969940186 | Accuracy::0.86512
+2018-09-26 01:02:25,416 - [INFO] - Best parameters is updated!
+2018-09-26 01:03:14,437 - [INFO] - Epoch: 27 | Loss: 0.392272412776947 | Accuracy::0.8693799999999999
+2018-09-26 01:03:14,559 - [INFO] - Best parameters is updated!
+2018-09-26 01:04:03,589 - [INFO] - Epoch: 28 | Loss: 0.3902410566806793 | Accuracy::0.87354
+2018-09-26 01:04:03,711 - [INFO] - Best parameters is updated!
+2018-09-26 01:04:54,393 - [INFO] - Epoch: 29 | Loss: 0.46228259801864624 | Accuracy::0.8439800000000001
+2018-09-26 01:05:45,239 - [INFO] - Epoch: 30 | Loss: 0.7465217709541321 | Accuracy::0.7101199999999999
+2018-09-26 01:05:48,100 - [INFO] - trained on [30] epoch, with test accuracy [0.8000000000000003]
+=> checkpoint found at './checkpoint.pth.tar'
+2018-09-26 01:07:43,765 - [INFO] - torch version: 0.3.0
+2018-09-26 01:07:43,765 - [INFO] - loading data...
+2018-09-26 01:08:48,078 - [INFO] - Epoch: 31 | Loss: 0.8729916214942932 | Accuracy::0.74126
+2018-09-26 01:09:38,858 - [INFO] - Epoch: 32 | Loss: 0.7604179978370667 | Accuracy::0.75458
+2018-09-26 01:10:29,618 - [INFO] - Epoch: 33 | Loss: 0.6580194234848022 | Accuracy::0.7646799999999999
+2018-09-26 01:11:20,380 - [INFO] - Epoch: 34 | Loss: 0.5148293972015381 | Accuracy::0.7677
+2018-09-26 01:12:11,116 - [INFO] - Epoch: 35 | Loss: 0.7237148880958557 | Accuracy::0.77336
+2018-09-26 01:12:14,044 - [INFO] - trained on [35] epoch, with test accuracy [0.8082]
+=> checkpoint found at './checkpoint.pth.tar'
+2018-09-26 01:12:48,311 - [INFO] - torch version: 0.3.0
+2018-09-26 01:12:48,315 - [INFO] - loading data...
+2018-09-26 01:13:51,021 - [INFO] - Epoch: 36 | Loss: 0.5348299145698547 | Accuracy::0.8542799999999999
+2018-09-26 01:14:41,852 - [INFO] - Epoch: 37 | Loss: 0.5350968837738037 | Accuracy::0.7725799999999999
+2018-09-26 01:15:31,053 - [INFO] - Epoch: 38 | Loss: 0.4586135149002075 | Accuracy::0.8614200000000001
+2018-09-26 01:16:20,174 - [INFO] - Epoch: 39 | Loss: 0.3627488613128662 | Accuracy::0.8773399999999999
+2018-09-26 01:16:20,292 - [INFO] - Best parameters is updated!
+2018-09-26 01:17:10,958 - [INFO] - Epoch: 40 | Loss: 0.5626611113548279 | Accuracy::0.77176
+2018-09-26 01:17:13,840 - [INFO] - trained on [40] epoch, with test accuracy [0.8236999999999999]
+=> checkpoint found at './checkpoint.pth.tar'
+2018-09-26 01:18:08,354 - [INFO] - torch version: 0.3.0
+2018-09-26 01:18:08,358 - [INFO] - loading data...
+2018-09-26 01:19:11,541 - [INFO] - Epoch: 41 | Loss: 0.199357807636261 | Accuracy::0.8735799999999999
+2018-09-26 01:20:00,656 - [INFO] - Epoch: 42 | Loss: 0.33019065856933594 | Accuracy::0.88454
+2018-09-26 01:20:00,777 - [INFO] - Best parameters is updated!
+2018-09-26 01:20:49,802 - [INFO] - Epoch: 43 | Loss: 0.35046303272247314 | Accuracy::0.8888400000000001
+2018-09-26 01:20:49,938 - [INFO] - Best parameters is updated!
+2018-09-26 01:21:40,676 - [INFO] - Epoch: 44 | Loss: 0.5082605481147766 | Accuracy::0.7692
+2018-09-26 01:22:29,865 - [INFO] - Epoch: 45 | Loss: 0.2712952792644501 | Accuracy::0.8809400000000001
+2018-09-26 01:22:32,733 - [INFO] - trained on [45] epoch, with test accuracy [0.8543]
+\end{verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{torch}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{n}{resume} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{../checkpoint.pth.tar}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{checkpoint} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{resume}\PY{p}{,} \PY{n}{map\PYZus{}location}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cpu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{start\PYZus{}epoch} \PY{o}{=} \PY{n}{checkpoint}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{epoch}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        \PY{n}{best\PYZus{}train\PYZus{}acc} \PY{o}{=} \PY{n}{checkpoint}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best\PYZus{}train\PYZus{}acc}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        \PY{n}{train\PYZus{}loss} \PY{o}{=} \PY{n}{checkpoint}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{train\PYZus{}loss}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        \PY{n}{train\PYZus{}accuracy\PYZus{}epoch} \PY{o}{=} \PY{n}{checkpoint}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{train\PYZus{}accuracy\PYZus{}epoch}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{train\PYZus{}accuracy\PYZus{}epoch}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{num of epoch}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{accuracy}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_4_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{train\PYZus{}loss}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{num of data access}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{loss}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Here \texttt{1\ num\ of\ data\ access} means that 100 figures are used
+to train the model.
+
+    \hypertarget{some-notes-on-experiments}{%
+\subsection{Some notes on experiments}\label{some-notes-on-experiments}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Why we have sudden decrease in training accuracy? Because in my
+  training setting, with 0.5 probability I apply the data augmentation
+  in the current epoch. And for each batch of data, only 60\% of the
+  pictures will be randomly flipped either horizontally or vertically.
+  The drop may occur when the data augmentation takes place and produce
+  some new patterns that are unseen to the current cnn network or it is
+  possible the batch size is small. But test accuracy is still
+  increasing.
+\item
+  I previously made a mistake when writing the dropout. Indeed we need
+  to use \texttt{nn.Droput2d} instead of
+  \texttt{nn.functional.droput2d}. If you use the latter, you need
+  specifically set the \texttt{training=True}. Otherwise, it won't take
+  effect! That's the reason why I saw 97\% training accuracy in my
+  previous implementation. Obviously, it is over-fitted. But, I can
+  still get around 83\% test accuracy.
+\end{enumerate}
+
+    \hypertarget{extra-credit-problem}{%
+\subsection{Extra credit problem}\label{extra-credit-problem}}
+
+Following code snippet is the key part of the monte carlo method for
+estimating testing accuracy. For details, please see the attached code
+\texttt{mc\_test\_acc.py}.
+
+\begin{verbatim}
+for i in range(0, len(y_test), batch_size):
+    x_test_batch = torch.FloatTensor(x_test[i:i+batch_size, :])
+    y_test_batch = torch.LongTensor(y_test[i:i+batch_size])
+    if use_cuda:
+        data, target = Variable(x_test_batch).cuda(), Variable(y_test_batch).cuda()
+    else:
+        data, target = Variable(x_test_batch), Variable(y_test_batch)
+    output = model.forward(data)
+    mc_output = output
+    for i in range(99):
+        output = model.forward(data)
+        mc_output += output
+    mc_output = mc_output / 100
+    prediction = mc_output.data.max(1)[1]
+    accuracy = (float(prediction.eq(target.data).sum()) / float(batch_size))
+    test_accuracy.append(accuracy)
+accuracy_test = np.mean(test_accuracy)
+\end{verbatim}
+
+    I get 100 replicates of the output of the softmax function and average
+them to get the predicted value. Finally, with 100 i.i.d relization of
+the mask \(R\), my monte carlo test accuracy is \textbf{83.78\%}, which
+is smaller than the heuristic test accuracy \textbf{85.43\%}.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
