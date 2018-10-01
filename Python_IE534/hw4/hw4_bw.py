@@ -1,3 +1,18 @@
+"""
+Implementation of Resnet.
+    1. The whole script is structed to follow the style suggested by reference [1].
+    2. The network(Resnet) is loaded from the network.py.
+    3. Features:
+        * You can resume the training by passing the argument --resume followed by the address of the checkpoint file.
+        * You can continue training by adding the epochs (--num_epochs some_number_larger_than_previous_setting)
+
+Example:
+In terminal, 
+    python hw4_bw.py --num_epochs 10 --batch_size 100 --test_only --resume './checkpoint.pth.tar'
+    python hw4_bw.py --num_epochs 50 --batch_size 500 --resume './checkpoint.pth.tar'
+Reference:
+1. https://github.com/meliketoy/wide-resnet.pytorch/blob/master/main.py 
+"""
 import torchvision
 import torchvision.transforms as transforms
 import torch
@@ -23,9 +38,6 @@ parser.add_argument('--batch_size', '-b', default=100, type=int, help='batch siz
 parser.add_argument('--resume', '-r', default="./checkpoint.pth.tar", help='resume from checkpoint')
 parser.add_argument('--test_only', '-t', action='store_true', help='do not use it if you are not the devloper.')
 args = parser.parse_args()
-
-# python hw4_bw.py --num_epochs 10 --batch_size 100 --test_only --resume './checkpoint.pth.tar'
-
 
 log_level = logging.INFO
 logger = logging.getLogger()
