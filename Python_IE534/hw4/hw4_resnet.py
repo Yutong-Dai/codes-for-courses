@@ -8,7 +8,7 @@ Implementation of Resnet.
 
 Example:
 In terminal, 
-    python hw4_resnet.py --num_epochs 10 --batch_size 100 --test_only --resume './checkpoint.pth.tar'
+    python hw4_resnet.py --num_epochs 10 --batch_size 100 --test_only --resume './myresnet_checkpoint.pth.tar'
     python hw4_resnet.py --num_epochs 50 --batch_size 500 --resume './checkpoint.pth.tar'
 Reference:
 1. https://github.com/meliketoy/wide-resnet.pytorch/blob/master/main.py 
@@ -42,7 +42,7 @@ args = parser.parse_args()
 log_level = logging.INFO
 logger = logging.getLogger()
 logger.setLevel(log_level)
-handler = logging.FileHandler("task.log")
+handler = logging.FileHandler("myresnet.log")
 handler.setLevel(log_level)
 formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s')
 handler.setFormatter(formatter)
@@ -115,17 +115,17 @@ if args.resume:
         testing_loss_seq = checkpoint['testing_loss_seq']
         testing_best_accuracy = checkpoint['testing_best_accuracy']
         print("=> loaded checkpoint '{}' (epoch {})"
-              .format(args.resume, checkpoint['epoch']))
+              .format(args.resume, (checkpoint['epoch'] + 1)))
         logger.info("=> loaded checkpoint '{}' (epoch {})"
                     .format(args.resume, (checkpoint['epoch'] + 1)))
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
         logger.info("=> no checkpoint found at '{}'".format(args.resume))
-        print("Training the resnet from scratch...")
-        logger.info("Training the resnet from scratch...")
+        print("=> Training the resnet from scratch...")
+        logger.info("=> Training the resnet from scratch...")
 else:
-    print("Training the resnet from scratch...")
-    logger.info("Training the resnet from scratch...")
+    print("=> Training the resnet from scratch...")
+    logger.info("=> Training the resnet from scratch...")
 
 if use_cuda:
     net.cuda()
@@ -143,11 +143,10 @@ def train(epoch):
     net.train()
     if (epoch+1) % 20 == 0:
         current_learningRate /= 10
-        print("learning rate is updated!")
-        logger.info("learning rate is updated!")
+        logger.info("=> Learning rate is updated!")
         update_learning_rate(optimizer, current_learningRate)
     train_accuracy = []
-    for batch_idx, (images, labels) in enumerate(train_loader):
+    for _, (images, labels) in enumerate(train_loader):
         if use_cuda:
             images, labels = images.cuda(), labels.cuda()
         optimizer.zero_grad()
@@ -167,9 +166,9 @@ def train(epoch):
     else:
         loss_epoch = loss.data[0]
 
-    print("Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(
+    print("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(
         epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
-    logger.info("Epoch: [{}/{}] | Training Loss:[{}] | Training Accuracy: [{}]".format(
+    logger.info("=> Epoch: [{}/{}] | Training Loss:[{}] | Training Accuracy: [{}]".format(
         epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
     return loss_epoch, train_accuracy_epoch
 
@@ -177,7 +176,7 @@ def train(epoch):
 def test(epoch):
     net.eval()
     test_accuracy = []
-    for batch_idx, (images, labels) in enumerate(test_loader):
+    for _, (images, labels) in enumerate(test_loader):
         if use_cuda:
             images, labels = images.cuda(), labels.cuda()
         images, labels = Variable(images), Variable(labels)
@@ -193,9 +192,9 @@ def test(epoch):
     else:
         test_loss_epoch = loss.data[0]
     if (epoch + 1) % 5 == 0:
-        print("Epoch: [{}/{}] | Loss:[{}] | Testing Accuracy: [{}]".format(
+        print("=> Epoch: [{}/{}] | Loss:[{}] | Testing Accuracy: [{}]".format(
             epoch + 1, args.num_epochs, test_loss_epoch, test_accuracy_epoch))
-        logger.info("Epoch: [{}/{}] | Testing Loss:[{}] | Testing Accuracy: [{}]".format(
+        logger.info("=> Epoch: [{}/{}] | Testing Loss:[{}] | Testing Accuracy: [{}]".format(
             epoch + 1, args.num_epochs, test_loss_epoch, test_accuracy_epoch))
 
     return test_loss_epoch, test_accuracy_epoch
@@ -223,14 +222,14 @@ for epoch in range(start_epoch, args.num_epochs):
         "testing_accuracy_seq": testing_accuracy_seq,
         "testing_best_accuracy": testing_best_accuracy
     }
-    save_checkpoint(state, is_best)
+    save_checkpoint(state, is_best, filename='checkpoint.pth.tar', extra="myresnet_")
     if is_best:
-        logger.info("Best parameters are updated")
+        logger.info("=> Best parameters are updated")
 
 
 logger.info("Trained on [{}] epoch, with test accuracy [{}].\n \
- During the training stages, historical best test accuracy is \
+ => During the training stages, historical best test accuracy is \
  [{}]".format(args.num_epochs, testing_accuracy_seq[-1], testing_best_accuracy))
 print("Trained on [{}] epoch, with test accuracy [{}].\n \
- During the training stages, historical best test accuracy is \
+ => During the training stages, historical best test accuracy is \
  [{}]".format(args.num_epochs, testing_accuracy_seq[-1], testing_best_accuracy))

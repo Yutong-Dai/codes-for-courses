@@ -1,4 +1,6 @@
 """
+Usage:
+    python hw4_transfer_learning.py --num_epochs 10 --batch_size 100 --test_only --resume './tf_checkpoint.pth.tar'
 Reference:
 [1] https://towardsdatascience.com/transfer-learning-using-pytorch-4c3475f4495
 """
@@ -29,12 +31,17 @@ args = parser.parse_args()
 log_level = logging.INFO
 logger = logging.getLogger()
 logger.setLevel(log_level)
-handler = logging.FileHandler("transfer-learning.log")
+handler = logging.FileHandler("tf.log")
 handler.setLevel(log_level)
 formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.info("torch version: {}".format(torch.__version__))
+
+# from torch.utils import model_zoo
+# model_urls = {'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth'}
+# model = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2,2,2,2])
+# model.load_state_dict(model_zoo.load_url(model_urls['resnet18'], model_dir='./'))
 
 
 # Hyper Parameters
@@ -47,12 +54,14 @@ print("Data Preparation...")
 logger.info("Data Preparation...")
 transform_train = transforms.Compose([
     transforms.Resize(size=(224, 224)),
+    transforms.RandomCrop(224, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276]),
 ])
 
 transform_test = transforms.Compose([
+    transforms.Resize(size=(224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276]),
 ])
@@ -103,17 +112,17 @@ if args.resume:
         testing_loss_seq = checkpoint['testing_loss_seq']
         testing_best_accuracy = checkpoint['testing_best_accuracy']
         print("=> loaded checkpoint '{}' (epoch {})"
-              .format(args.resume, checkpoint['epoch']))
+              .format(args.resume, (checkpoint['epoch'] + 1)))
         logger.info("=> loaded checkpoint '{}' (epoch {})"
                     .format(args.resume, (checkpoint['epoch'] + 1)))
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
         logger.info("=> no checkpoint found at '{}'".format(args.resume))
-        print("Training based on the resnet-18 from scratch...")
-        logger.info("Training based on the resnet-18 from scratch...")
+        print("=> Training based on the resnet-18 from scratch...")
+        logger.info("=> Training based on the resnet-18 from scratch...")
 else:
-    print("Training based on the resnet-18 from scratch...")
-    logger.info("Training based on the resnet-18 from scratch...")
+    print("=> Training based on the resnet-18 from scratch...")
+    logger.info("=> Training based on the resnet-18 from scratch...")
 
 if use_cuda:
     net.cuda()
@@ -131,11 +140,10 @@ def train(epoch):
     net.train()
     if (epoch+1) % 20 == 0:
         current_learningRate /= 10
-        print("learning rate is updated!")
-        logger.info("learning rate is updated!")
+        logger.info("=> Learning rate is updated!")
         update_learning_rate(optimizer, current_learningRate)
     train_accuracy = []
-    for batch_idx, (images, labels) in enumerate(train_loader):
+    for _, (images, labels) in enumerate(train_loader):
         if use_cuda:
             images, labels = images.cuda(), labels.cuda()
         optimizer.zero_grad()
@@ -155,9 +163,9 @@ def train(epoch):
     else:
         loss_epoch = loss.data[0]
 
-    print("Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(
+    print("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(
         epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
-    logger.info("Epoch: [{}/{}] | Training Loss:[{}] | Training Accuracy: [{}]".format(
+    logger.info("=> Epoch: [{}/{}] | Training Loss:[{}] | Training Accuracy: [{}]".format(
         epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
     return loss_epoch, train_accuracy_epoch
 
@@ -165,7 +173,7 @@ def train(epoch):
 def test(epoch):
     net.eval()
     test_accuracy = []
-    for batch_idx, (images, labels) in enumerate(test_loader):
+    for _, (images, labels) in enumerate(test_loader):
         if use_cuda:
             images, labels = images.cuda(), labels.cuda()
         images, labels = Variable(images), Variable(labels)
@@ -181,9 +189,9 @@ def test(epoch):
     else:
         test_loss_epoch = loss.data[0]
     if (epoch + 1) % 5 == 0:
-        print("Epoch: [{}/{}] | Loss:[{}] | Testing Accuracy: [{}]".format(
+        print("=> Epoch: [{}/{}] | Loss:[{}] | Testing Accuracy: [{}]".format(
             epoch + 1, args.num_epochs, test_loss_epoch, test_accuracy_epoch))
-        logger.info("Epoch: [{}/{}] | Testing Loss:[{}] | Testing Accuracy: [{}]".format(
+        logger.info("=> Epoch: [{}/{}] | Testing Loss:[{}] | Testing Accuracy: [{}]".format(
             epoch + 1, args.num_epochs, test_loss_epoch, test_accuracy_epoch))
 
     return test_loss_epoch, test_accuracy_epoch
@@ -211,14 +219,14 @@ for epoch in range(start_epoch, args.num_epochs):
         "testing_accuracy_seq": testing_accuracy_seq,
         "testing_best_accuracy": testing_best_accuracy
     }
-    save_checkpoint(state, is_best)
+    save_checkpoint(state, is_best, filename='checkpoint.pth.tar', extra="tf_")
     if is_best:
-        logger.info("Best parameters are updated")
+        logger.info("=> Best parameters are updated")
 
 
-logger.info("Trained on [{}] epoch, with test accuracy [{}].\n \
+logger.info("=> Trained on [{}] epoch, with test accuracy [{}].\n \
  During the training stages, historical best test accuracy is \
  [{}]".format(args.num_epochs, testing_accuracy_seq[-1], testing_best_accuracy))
-print("Trained on [{}] epoch, with test accuracy [{}].\n \
+print("=> Trained on [{}] epoch, with test accuracy [{}].\n \
  During the training stages, historical best test accuracy is \
  [{}]".format(args.num_epochs, testing_accuracy_seq[-1], testing_best_accuracy))
