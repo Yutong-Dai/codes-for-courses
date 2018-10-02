@@ -1,14 +1,3 @@
-
-*.pyc
-
-
-\[Python\]IE534/hw1/.Rhistory
-
-\[Python\]IE534/hw1/.ipynb_checkpoints/HW1-checkpoint.ipynb
-
-\[Python\]IE534/.ipynb_checkpoints/Pytorch_Tutorial-checkpoint.ipynb
-
-\[Python\]IE534/data/CIFAR10.hdf5
 Python_IE534/data/cifar-100-python/meta
 Python_IE534/data/cifar-100-python/test
 Python_IE534/data/cifar-100-python/train
