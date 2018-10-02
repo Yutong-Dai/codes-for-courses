@@ -8,8 +8,8 @@ Implementation of Resnet.
 
 Example:
 In terminal, 
-    python hw4_bw.py --num_epochs 10 --batch_size 100 --test_only --resume './checkpoint.pth.tar'
-    python hw4_bw.py --num_epochs 50 --batch_size 500 --resume './checkpoint.pth.tar'
+    python hw4_resnet.py --num_epochs 10 --batch_size 100 --test_only --resume './checkpoint.pth.tar'
+    python hw4_resnet.py --num_epochs 50 --batch_size 500 --resume './checkpoint.pth.tar'
 Reference:
 1. https://github.com/meliketoy/wide-resnet.pytorch/blob/master/main.py 
 """
