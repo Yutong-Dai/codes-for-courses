@@ -9,7 +9,7 @@ Implementation of Resnet.
 Example:
 In terminal, 
     python hw4_resnet.py --num_epochs 10 --batch_size 100 --test_only --resume './myresnet_checkpoint.pth.tar'
-    python hw4_resnet.py --num_epochs 50 --batch_size 500 --resume './checkpoint.pth.tar'
+    python hw4_resnet.py --num_epochs 50 --batch_size 500 --resume './myresnet_checkpoint.pth.tar'
 Reference:
 1. https://github.com/meliketoy/wide-resnet.pytorch/blob/master/main.py 
 """
@@ -92,7 +92,14 @@ use_cuda = torch.cuda.is_available()
 start_epoch = 0
 
 net = ResNet()
-optimizer = optim.Adam(net.parameters())
+if use_cuda:
+    net.cuda()
+    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
+    print(torch.cuda.device_count())
+    cudnn.benchmark = True
+
+#optimizer = optim.Adam(net.parameters())
+optimizer = optim.SGD(net.parameters(), lr=0.05, momentum=0.9, weight_decay=5e-4)
 criterion = nn.CrossEntropyLoss()
 training_accuracy_seq = []
 training_loss_seq = []
@@ -127,22 +134,19 @@ else:
     print("=> Training the resnet from scratch...")
     logger.info("=> Training the resnet from scratch...")
 
-if use_cuda:
-    net.cuda()
-    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
-    print(torch.cuda.device_count())
-    cudnn.benchmark = True
-
 print("Model Training...")
 logger.info("Model Training...")
 
-current_learningRate = 0.001
+# use up-to-date learning rate; for resume purpose
+for param_group in optimizer.param_groups:
+    current_learningRate = param_group['lr']
 
 
 def train(epoch):
+    global current_learningRate
     net.train()
     if (epoch+1) % 20 == 0:
-        current_learningRate /= 10
+        current_learningRate /= 5
         logger.info("=> Learning rate is updated!")
         update_learning_rate(optimizer, current_learningRate)
     train_accuracy = []
@@ -183,7 +187,7 @@ def test(epoch):
         output = net(images)
         loss = criterion(output, labels)
         predicted = output.data.max(1)[1]
-        accuracy = (float(predicted.eq(labels.data).sum()) / float(batch_size))
+        accuracy = (float(predicted.eq(labels.data).sum()) / float(100))  # test batch size 100
         test_accuracy.append(accuracy)
 
     test_accuracy_epoch = np.mean(test_accuracy)

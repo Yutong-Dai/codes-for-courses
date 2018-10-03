@@ -4,3 +4,6 @@ Python_IE534/data/cifar-100-python/train
 Python_IE534/data/CIFAR10.hdf5
 Python_IE534/data/cifar-100-python/file.txt~
 Python_IE534/hw4/.ipynb_checkpoints/test-checkpoint.ipynb
+Python_IE534/hw4/myresnet_model_best.pth.tar
+Python_IE534/hw4/myresnet_checkpoint.pth.tar
+Python_IE534/data/model/resnet18-5c106cde.pth

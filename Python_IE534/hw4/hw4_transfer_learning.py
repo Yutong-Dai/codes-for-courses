@@ -80,7 +80,12 @@ logger.info("Model setting...")
 use_cuda = torch.cuda.is_available()
 start_epoch = 0
 net = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
-net.load_state_dict(torch.load("./model/resnet18-5c106cde.pth"))
+if use_cuda:
+    net.cuda()
+    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
+    print(torch.cuda.device_count())
+    cudnn.benchmark = True
+net.load_state_dict(torch.load("../data/model/resnet18-5c106cde.pth"))
 
 # Do not change the layers that are pre-trained with the only exception
 # on the last full-connected layer.
@@ -89,7 +94,8 @@ for param in net.parameters():
 # change the last fc layer for cifar100
 net.fc = nn.Linear(in_features=net.fc.in_features, out_features=100)
 
-optimizer = optim.Adam(net.parameters())
+#optimizer = optim.Adam(net.parameters())
+optimizer = optim.SGD(net.parameters(), lr=0.05, momentum=0.9, weight_decay=5e-4)
 criterion = nn.CrossEntropyLoss()
 training_accuracy_seq = []
 training_loss_seq = []
@@ -124,19 +130,17 @@ else:
     print("=> Training based on the resnet-18 from scratch...")
     logger.info("=> Training based on the resnet-18 from scratch...")
 
-if use_cuda:
-    net.cuda()
-    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
-    print(torch.cuda.device_count())
-    cudnn.benchmark = True
 
 print("Model Training...")
 logger.info("Model Training...")
 
-current_learningRate = 0.001
+# use up-to-date learning rate; for resume purpose
+for param_group in optimizer.param_groups:
+    current_learningRate = param_group['lr']
 
 
 def train(epoch):
+    global current_learningRate
     net.train()
     if (epoch+1) % 20 == 0:
         current_learningRate /= 10
@@ -180,7 +184,7 @@ def test(epoch):
         output = net(images)
         loss = criterion(output, labels)
         predicted = output.data.max(1)[1]
-        accuracy = (float(predicted.eq(labels.data).sum()) / float(batch_size))
+        accuracy = (float(predicted.eq(labels.data).sum()) / float(100))  # test batch size 100
         test_accuracy.append(accuracy)
 
     test_accuracy_epoch = np.mean(test_accuracy)

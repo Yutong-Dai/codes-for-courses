@@ -1,0 +1,66 @@
+----------------------------------------
+Begin Torque Prologue on nid27634
+at Wed Oct  3 01:40:05 CDT 2018
+Job Id:			9068312.bw
+Username:		tra380
+Group:			TRAIN_bauh
+Job name:		hw4_resnet
+Requested resources:	neednodes=1:ppn=16:xk,nodes=1:ppn=16:xk,walltime=02:00:00
+Queue:			normal
+Account:		bauh
+End Torque Prologue:  0.124 elapsed
+----------------------------------------
+
+
+
+
+Data Preparation...
+Files already downloaded and verified
+Loading Data...
+Model setting...
+1
+Resume from the checkpoint...
+=> loading checkpoint './myresnet_checkpoint.pth.tar'
+=> loaded checkpoint './myresnet_checkpoint.pth.tar' (epoch 19)
+Model Training...
+=> Epoch: [20/50] | Loss:[0.8623765707015991] | Training Accuracy: [0.7144799999999999]
+=> Epoch: [20/50] | Loss:[1.5515791177749634] | Testing Accuracy: [0.5589000000000001]
+=> Epoch: [21/50] | Loss:[0.8274912238121033] | Training Accuracy: [0.7392400000000001]
+=> Epoch: [22/50] | Loss:[0.8611164093017578] | Training Accuracy: [0.7498200000000002]
+=> Epoch: [23/50] | Loss:[0.8724042177200317] | Training Accuracy: [0.7598800000000003]
+=> Epoch: [24/50] | Loss:[0.7936758399009705] | Training Accuracy: [0.7685400000000001]
+=> Epoch: [25/50] | Loss:[0.7527515292167664] | Training Accuracy: [0.77354]
+=> Epoch: [25/50] | Loss:[1.4251067638397217] | Testing Accuracy: [0.5691999999999999]
+=> Epoch: [26/50] | Loss:[0.7774773240089417] | Training Accuracy: [0.7785600000000001]
+=> Epoch: [27/50] | Loss:[0.7223830819129944] | Training Accuracy: [0.78786]
+=> Epoch: [28/50] | Loss:[0.6892043352127075] | Training Accuracy: [0.7937800000000002]
+=> Epoch: [29/50] | Loss:[0.736912190914154] | Training Accuracy: [0.79742]
+=> Epoch: [30/50] | Loss:[0.676679790019989] | Training Accuracy: [0.80542]
+=> Epoch: [30/50] | Loss:[1.4833259582519531] | Testing Accuracy: [0.5509000000000001]
+=> Epoch: [31/50] | Loss:[0.6485733985900879] | Training Accuracy: [0.8107400000000001]
+=> Epoch: [32/50] | Loss:[0.6008321046829224] | Training Accuracy: [0.8177599999999998]
+=> Epoch: [33/50] | Loss:[0.6704975962638855] | Training Accuracy: [0.82298]
+=> Epoch: [34/50] | Loss:[0.5634472370147705] | Training Accuracy: [0.8263999999999997]
+=> Epoch: [35/50] | Loss:[0.6587131023406982] | Training Accuracy: [0.83194]
+=> Epoch: [35/50] | Loss:[1.5328882932662964] | Testing Accuracy: [0.5543]
+=> Epoch: [36/50] | Loss:[0.6026002764701843] | Training Accuracy: [0.8393200000000001]
+=> Epoch: [37/50] | Loss:[0.5791146159172058] | Training Accuracy: [0.8429999999999999]
+=> Epoch: [38/50] | Loss:[0.5398606657981873] | Training Accuracy: [0.8482600000000001]
+=> Epoch: [39/50] | Loss:[0.5275292992591858] | Training Accuracy: [0.8534599999999999]
+=> Epoch: [40/50] | Loss:[0.38593578338623047] | Training Accuracy: [0.88464]
+=> Epoch: [40/50] | Loss:[1.5387866497039795] | Testing Accuracy: [0.5586]
+=> Epoch: [41/50] | Loss:[0.3492398262023926] | Training Accuracy: [0.8925000000000002]
+=> Epoch: [42/50] | Loss:[0.3525826632976532] | Training Accuracy: [0.8959199999999999]
+=> Epoch: [43/50] | Loss:[0.40198951959609985] | Training Accuracy: [0.89968]
+=> Epoch: [44/50] | Loss:[0.3618125915527344] | Training Accuracy: [0.904]
+=> Epoch: [45/50] | Loss:[0.33236607909202576] | Training Accuracy: [0.90404]
+=> Epoch: [45/50] | Loss:[1.4874122142791748] | Testing Accuracy: [0.5680999999999999]
+=> Epoch: [46/50] | Loss:[0.3866465985774994] | Training Accuracy: [0.9073600000000002]
+=> Epoch: [47/50] | Loss:[0.361106276512146] | Training Accuracy: [0.90994]
+=> Epoch: [48/50] | Loss:[0.31303808093070984] | Training Accuracy: [0.9117600000000001]
+=> Epoch: [49/50] | Loss:[0.31776654720306396] | Training Accuracy: [0.9114200000000001]
+=> Epoch: [50/50] | Loss:[0.33122050762176514] | Training Accuracy: [0.9158000000000002]
+=> Epoch: [50/50] | Loss:[1.5509562492370605] | Testing Accuracy: [0.5631]
+Trained on [50] epoch, with test accuracy [0.5631].
+  => During the training stages, historical best test accuracy is  [0.5691999999999999]
+Application 69968324 resources: utime ~2493s, stime ~107s, Rss ~1730708, inblocks ~1722820, outblocks ~1946399
