@@ -100,6 +100,7 @@ if use_cuda:
 
 #optimizer = optim.Adam(net.parameters())
 optimizer = optim.SGD(net.parameters(), lr=0.05, momentum=0.9, weight_decay=5e-4)
+#optimizer = optim.SGD(net.parameters(), lr=0.001)
 criterion = nn.CrossEntropyLoss()
 training_accuracy_seq = []
 training_loss_seq = []
@@ -145,8 +146,8 @@ for param_group in optimizer.param_groups:
 def train(epoch):
     global current_learningRate
     net.train()
-    if (epoch+1) % 20 == 0:
-        current_learningRate /= 5
+    if (epoch+1) % 30 == 0:
+        current_learningRate /= 2
         logger.info("=> Learning rate is updated!")
         update_learning_rate(optimizer, current_learningRate)
     train_accuracy = []
@@ -195,7 +196,7 @@ def test(epoch):
         test_loss_epoch = loss.item()
     else:
         test_loss_epoch = loss.data[0]
-    if (epoch + 1) % 5 == 0:
+    if (epoch + 1) % 2 == 0:
         print("=> Epoch: [{}/{}] | Loss:[{}] | Testing Accuracy: [{}]".format(
             epoch + 1, args.num_epochs, test_loss_epoch, test_accuracy_epoch))
         logger.info("=> Epoch: [{}/{}] | Testing Loss:[{}] | Testing Accuracy: [{}]".format(

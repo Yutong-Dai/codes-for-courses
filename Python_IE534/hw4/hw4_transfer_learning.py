@@ -1,6 +1,6 @@
 """
 Usage:
-    python hw4_transfer_learning.py --num_epochs 10 --batch_size 100 --test_only --resume './tf_checkpoint.pth.tar'
+    python hw4_transfer_learning.py --num_epochs 10 --batch_size 100 --train_all --test_only --resume './tf_checkpoint.pth.tar'
 Reference:
 [1] https://towardsdatascience.com/transfer-learning-using-pytorch-4c3475f4495
 """
@@ -24,6 +24,7 @@ from myutils import save_checkpoint, update_learning_rate
 parser = argparse.ArgumentParser(description='PyTorch CIFAR-100 Training')
 parser.add_argument('--num_epochs', '-e', default=10, type=int, help='total training epoch')
 parser.add_argument('--batch_size', '-b', default=100, type=int, help='batch size')
+parser.add_argument('--train_all', '-a', action='store_true', help='train all layers or only the last fc layer')
 parser.add_argument('--resume', '-r', default="./checkpoint.pth.tar", help='resume from checkpoint')
 parser.add_argument('--test_only', '-t', action='store_true', help='do not use it if you are not the devloper.')
 args = parser.parse_args()
@@ -73,6 +74,16 @@ if args.test_only:
                                                shuffle=False, sampler=SubsetRandomSampler(range(2000)))
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=2,
                                               sampler=SubsetRandomSampler(range(100)))
+print("Loading Data...")
+logger.info("Loading Data...")
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=2)
+
+if args.test_only:
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                               shuffle=False, sampler=SubsetRandomSampler(range(2000)))
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False, num_workers=2,
+                                              sampler=SubsetRandomSampler(range(100)))
 
 print("Model setting...")
 logger.info("Model setting...")
@@ -80,22 +91,20 @@ logger.info("Model setting...")
 use_cuda = torch.cuda.is_available()
 start_epoch = 0
 net = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
-if use_cuda:
-    net.cuda()
-    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
-    print(torch.cuda.device_count())
-    cudnn.benchmark = True
 net.load_state_dict(torch.load("../data/model/resnet18-5c106cde.pth"))
+
 
 # Do not change the layers that are pre-trained with the only exception
 # on the last full-connected layer.
-for param in net.parameters():
-    param.requires_grad = False
+if not args.train_all:
+    for param in net.parameters():
+        param.requires_grad = False
 # change the last fc layer for cifar100
 net.fc = nn.Linear(in_features=net.fc.in_features, out_features=100)
 
 #optimizer = optim.Adam(net.parameters())
 optimizer = optim.SGD(net.parameters(), lr=0.05, momentum=0.9, weight_decay=5e-4)
+
 criterion = nn.CrossEntropyLoss()
 training_accuracy_seq = []
 training_loss_seq = []
@@ -138,12 +147,18 @@ logger.info("Model Training...")
 for param_group in optimizer.param_groups:
     current_learningRate = param_group['lr']
 
+if use_cuda:
+    net.cuda()
+    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
+    print(torch.cuda.device_count())
+    cudnn.benchmark = True
+
 
 def train(epoch):
     global current_learningRate
     net.train()
-    if (epoch+1) % 20 == 0:
-        current_learningRate /= 10
+    if (epoch+1) % 10 == 0:
+        current_learningRate /= 2
         logger.info("=> Learning rate is updated!")
         update_learning_rate(optimizer, current_learningRate)
     train_accuracy = []
@@ -192,7 +207,7 @@ def test(epoch):
         test_loss_epoch = loss.item()
     else:
         test_loss_epoch = loss.data[0]
-    if (epoch + 1) % 5 == 0:
+    if (epoch + 1) % 2 == 0:
         print("=> Epoch: [{}/{}] | Loss:[{}] | Testing Accuracy: [{}]".format(
             epoch + 1, args.num_epochs, test_loss_epoch, test_accuracy_epoch))
         logger.info("=> Epoch: [{}/{}] | Testing Loss:[{}] | Testing Accuracy: [{}]".format(

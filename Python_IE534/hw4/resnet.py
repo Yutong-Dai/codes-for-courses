@@ -39,7 +39,7 @@ class ResNet(nn.Module):
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=32,
                                kernel_size=3, padding=1, stride=1)
         self.batch_norm1 = nn.BatchNorm2d(num_features=32)
-        self.dropout1 = nn.Dropout2d(p=0.5)
+        self.dropout1 = nn.Dropout2d(p=0.2)
         self.layer1 = self.repeat_blocks(in_channels=32, out_channels=32,
                                          stride=1, padding=1, num_blocks=2)
         self.layer2 = self.repeat_blocks(in_channels=32, out_channels=64,
