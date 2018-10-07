@@ -4,5 +4,7 @@
 			"path": "Python_IE534"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"python.pythonPath": "/Users/ym/anaconda/bin/python"
+	}
 }
