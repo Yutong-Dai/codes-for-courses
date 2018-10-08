@@ -5,6 +5,7 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "/Users/ym/anaconda/bin/python"
+		"python.pythonPath": "/Users/ym/anaconda/bin/python",
+		"git.ignoreLimitWarning": true
 	}
 }
