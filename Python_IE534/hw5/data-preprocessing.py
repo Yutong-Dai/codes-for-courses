@@ -8,7 +8,7 @@ Desscription: data preporcessing for hw5.
 '''
 
 import os
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
+# os.chdir(os.path.dirname(os.path.realpath(__file__)))
 category = [name for name in os.listdir("../data/tiny-imagenet-200/train/") if name != '.DS_Store']
 with open("../data/tiny-imagenet-200/words.txt") as f:
     content = f.readlines()
@@ -20,3 +20,4 @@ for item in content:
 train_dict = {}
 for name in category:
     train_dict[name] = full_dict[name]
+print(train_dict)
