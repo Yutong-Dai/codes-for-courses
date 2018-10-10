@@ -10,3 +10,5 @@ Python_IE534/data/model/resnet18-5c106cde.pth
 Python_IE534/hw4/tf_checkpoint.pth.tar
 Python_IE534/hw4/tf_model_best.pth.tar
 Python_IE534/data/tiny-imagenet-200
+Python_IE534/hw5/data_lzf.h5
+Python_IE534/hw5/data_huge.h5
