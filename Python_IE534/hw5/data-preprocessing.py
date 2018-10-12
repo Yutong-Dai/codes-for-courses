@@ -8,7 +8,6 @@ Desscription: data preporcessing for hw5.
 '''
 
 import utils
-import h5py
 import numpy as np
 import time
 
@@ -25,8 +24,3 @@ for url in img_all:
     label_triplet.append(label_tri)
 end = time.time()
 print("Finished in {} mins".format((end-start) / 60))
-
-hf = h5py.File('data_lzf.h5', 'w')
-hf.create_dataset('img_triplet', data=img_triplet, compression="lzf")
-hf.create_dataset('label_triplet', data=label_triplet, compression="lzf")
-hf.close()
