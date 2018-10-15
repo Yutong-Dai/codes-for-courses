@@ -3,12 +3,14 @@ Python_IE534/data/cifar-100-python/test
 Python_IE534/data/cifar-100-python/train
 Python_IE534/data/CIFAR10.hdf5
 Python_IE534/data/cifar-100-python/file.txt~
-Python_IE534/hw4/.ipynb_checkpoints/test-checkpoint.ipynb
 Python_IE534/hw4/myresnet_model_best.pth.tar
 Python_IE534/hw4/myresnet_checkpoint.pth.tar
 Python_IE534/data/model/resnet18-5c106cde.pth
 Python_IE534/hw4/tf_checkpoint.pth.tar
 Python_IE534/hw4/tf_model_best.pth.tar
 Python_IE534/data/tiny-imagenet-200
-Python_IE534/hw5/data_lzf.h5
-Python_IE534/hw5/data_huge.h5
+Python_IE534/data/model/resnet101-5d3b4d8f.pth
+
+Python_IE534/hw4/.ipynb_checkpoints/hw4_resnet-checkpoint.py
+
+Python_IE411/.ipynb_checkpoints/hw4-checkpoint.ipynb
