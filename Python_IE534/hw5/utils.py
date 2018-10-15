@@ -13,6 +13,9 @@ from PIL import Image
 import random
 import time
 import torch.utils.data as data
+import pickle
+import torch
+import shutil
 
 
 def create_database():
@@ -24,7 +27,7 @@ def create_database():
 
     @output:
         train_dict: A dictionay contains internal-encoding and its corresponding label.
-                    e.g. {'n01443537': 'goldfish, Carassius auratus'}
+                    e.g. {'n01443537': [0, 'goldfish, Carassius auratus']}
         db: A dictionay contains internal-encode and all the image address.
             e.g. {'n01443537': ['../data/tiny-imagenet-200/train/n01443537/images/n01443537_0.JPEG']}
     """
@@ -103,35 +106,7 @@ def sample_the_triplet(query_img, database, train_dict):
     return img_triplet, label_triplet
 
 
-class TinyImageNet(data.Dataset):
-    def __init__(self, img_triplet, label_triplet, transform=None):
-        self.transform = transform
-        self.data = img_triplet
-        self.target = label_triplet
-
-    def __getitem__(self, index):
-        """
-        Args:
-            index (int): Index
-        Returns:
-            tuple: (image, target) where target is index of the target class.
-        """
-        img_triplet, target_triplet = self.data[index], self.target[index]
-        # to return a PIL Image
-        img_triplet = [Image.open(img_triplet[i]) for i in range(3)]
-        img_triplet = [item.convert("RGB") if item.mode == "L" else item for item in img_triplet]
-        if self.transform is not None:
-            img_triplet = [self.transform(item) for item in img_triplet]
-        return img_triplet, target_triplet
-
-    def __len__(self):
-        return len(self.data)
-
-    def __repr__(self):
-        return "Triplet for 200-TinyImageNet"
-
-
-def generate_training_data_set_for_current_epoch():
+def generate_training_data_set(save=False, epoch_idx=""):
     train_dict, db = create_database()
     img_all = [db[i] for i in db.keys()]
     img_all = [item for l in img_all for item in l]
@@ -144,11 +119,75 @@ def generate_training_data_set_for_current_epoch():
         img_triplet.append(img_tri)
         label_triplet.append(label_tri)
     end = time.time()
-    print("Finished in {} mins".format((end-start) / 60))
+    print("Finished in {} mins to sampling.".format((end-start) / 60))
+    if save:
+        pickle.dump((img_triplet, label_triplet), file=open("./pickle/train_{}.p".format(epoch_idx), "wb"))
     return img_triplet, label_triplet
 
 
-def calculateDistance(i1, i2):
-    """
-    """
-    return np.sum((i1-i2)**2)
+def generate_testing_data_set():
+    train_dict, _ = create_database()
+    with open("../data/tiny-imagenet-200/val/val_annotations.txt") as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    test_dict = {}
+    for item in content:
+        temp = item.split("\t")
+        test_dict["../data/tiny-imagenet-200/val/images/{}".format(temp[0])] = [temp[1]]
+    img = []
+    label = []
+    for key in test_dict.keys():
+        img.append(key)
+        label.append(train_dict[test_dict[key][0]][0])
+    return img, label
+
+
+class TinyImageNet(data.Dataset):
+    def __init__(self, img, label, train=True, transform=None):
+        self.transform = transform
+        self.data, self.target = img, label
+        self.train = train
+
+    def __getitem__(self, index):
+        """
+        Args:
+            index (int): Index
+        Returns:
+            if train:
+                tuple: (image_triplet, target_triplet) where target is index of the target class.
+            else:
+                tuple: (img, target)
+        """
+        if self.train:
+            img_triplet, target_triplet = self.data[index], self.target[index]
+            # to return a PIL Image
+            img_triplet = [Image.open(img_triplet[i]) for i in range(3)]
+            img_triplet = [item.convert("RGB") if item.mode == "L" else item for item in img_triplet]
+            if self.transform is not None:
+                img_triplet = [self.transform(item) for item in img_triplet]
+            return img_triplet, target_triplet
+        else:
+            img, label = self.data[index], self.target[index]
+            img = Image.open(img)
+            if img.mode == "L":
+                img = img.convert("RGB")
+            if self.transform is not None:
+                img = self.transform(img)
+            return img, label
+
+    def __len__(self):
+        return len(self.data)
+
+    def __repr__(self):
+        return "Triplet for 200-TinyImageNet"
+
+
+def save_checkpoint(state, is_best, filename='checkpoint.pth.tar', extra=""):
+    torch.save(state, extra+filename)
+    if is_best:
+        shutil.copyfile(extra+filename, extra+'model_best.pth.tar')
+
+
+def update_learning_rate(optimizer, lr):
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
