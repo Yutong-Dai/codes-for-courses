@@ -1,20 +1,20 @@
-2018-10-15 11:07:26,229 - [INFO] - torch version: 0.4.1
-2018-10-15 11:07:26,229 - [INFO] - Data Preparation...
-2018-10-15 11:07:26,229 - [INFO] - Loading Data...
-2018-10-15 11:07:26,441 - [INFO] - Model setting...
-2018-10-15 11:07:28,212 - [INFO] - Resume from the checkpoint...
-2018-10-15 11:07:28,212 - [INFO] - => no checkpoint found at './checkpoint.pth.tar'
-2018-10-15 11:07:28,213 - [INFO] - => Training based on the resnet-101 from scratch...
-2018-10-15 11:07:28,213 - [INFO] - Model Training...
-2018-10-15 11:08:12,654 - [INFO] - => Epoch: [1/5] | Loss:[0.8218627870082855] | Training Accuracy: [0.0]
-2018-10-15 11:08:16,344 - [INFO] - => Epoch: [1/5] | Testing Accuracy: [0.0]
-2018-10-15 11:09:02,214 - [INFO] - => Epoch: [2/5] | Loss:[3.4957634918391705] | Training Accuracy: [0.0]
-2018-10-15 11:09:05,770 - [INFO] - => Epoch: [2/5] | Testing Accuracy: [0.0]
-2018-10-15 11:09:47,153 - [INFO] - => Epoch: [3/5] | Loss:[16.314634799957275] | Training Accuracy: [0.0]
-2018-10-15 11:09:50,673 - [INFO] - => Epoch: [3/5] | Testing Accuracy: [0.0]
-2018-10-15 11:10:31,977 - [INFO] - => Epoch: [4/5] | Loss:[17.48063373565674] | Training Accuracy: [0.0]
-2018-10-15 11:10:35,499 - [INFO] - => Epoch: [4/5] | Testing Accuracy: [0.0]
-2018-10-15 11:11:15,708 - [INFO] - => Epoch: [5/5] | Loss:[4.641662955284119] | Training Accuracy: [0.0]
-2018-10-15 11:11:19,194 - [INFO] - => Epoch: [5/5] | Testing Accuracy: [0.0]
-2018-10-15 11:11:20,139 - [INFO] - => Trained on [5] epoch, with test accuracy [0.0].
+2018-10-15 15:52:49,416 - [INFO] - torch version: 0.4.1
+2018-10-15 15:52:49,416 - [INFO] - Data Preparation...
+2018-10-15 15:52:49,416 - [INFO] - Loading Data...
+2018-10-15 15:52:49,632 - [INFO] - Model setting...
+2018-10-15 15:52:51,271 - [INFO] - Resume from the checkpoint...
+2018-10-15 15:52:51,271 - [INFO] - => no checkpoint found at './checkpoint.pth.tar'
+2018-10-15 15:52:51,271 - [INFO] - => Training based on the resnet-101 from scratch...
+2018-10-15 15:52:51,271 - [INFO] - Model Training...
+2018-10-15 15:53:43,322 - [INFO] - => Epoch: [1/5] | Loss:[0.4789993464946747] | Training Accuracy: [0.0]
+2018-10-15 15:53:48,087 - [INFO] - => Epoch: [1/5] | Testing Accuracy: [0.0]
+2018-10-15 15:54:37,585 - [INFO] - => Epoch: [2/5] | Loss:[1.3201730698347092] | Training Accuracy: [0.0]
+2018-10-15 15:54:41,237 - [INFO] - => Epoch: [2/5] | Testing Accuracy: [0.0]
+2018-10-15 15:55:26,095 - [INFO] - => Epoch: [3/5] | Loss:[6.63445645570755] | Training Accuracy: [0.0]
+2018-10-15 15:55:29,642 - [INFO] - => Epoch: [3/5] | Testing Accuracy: [0.0]
+2018-10-15 15:56:15,607 - [INFO] - => Epoch: [4/5] | Loss:[11.5304594039917] | Training Accuracy: [0.0]
+2018-10-15 15:56:19,245 - [INFO] - => Epoch: [4/5] | Testing Accuracy: [0.0]
+2018-10-15 15:57:05,341 - [INFO] - => Epoch: [5/5] | Loss:[9.57078242301941] | Training Accuracy: [0.0]
+2018-10-15 15:57:08,992 - [INFO] - => Epoch: [5/5] | Testing Accuracy: [0.0]
+2018-10-15 15:57:09,859 - [INFO] - => Trained on [5] epoch, with test accuracy [0.0].
   During the training stages, historical best test accuracy is  [0]
