@@ -6,7 +6,7 @@ Last Modified: Monday, 2018-10-15 01:29
 --------------------------------------------
 Desscription: hw5 (Learning Fine-grained Image Similarity with Deep Ranking).
 
-python main.py --num_epochs 30 --batch_size 200 --train_all --resume './hw5_checkpoint.pth.tar'
+python main.py --num_epochs 30 --batch_size 10 --train_all --resume './hw5_checkpoint.pth.tar'
 python main.py --num_epochs 2 --batch_size 100 --train_all --resume './hw5_checkpoint.pth.tar' --test_only
 '''
 
@@ -25,6 +25,7 @@ import argparse
 import logging
 import numpy as np
 import pickle
+#import time
 
 import utils
 # General setups
@@ -49,7 +50,6 @@ logger.info("torch version: {}".format(torch.__version__))
 
 # Hyper Parameters
 batch_size = args.batch_size
-topk = 30
 pdist = nn.PairwiseDistance(p=2)
 # Data Preparation
 
@@ -147,9 +147,9 @@ if use_cuda:
     cudnn.benchmark = True
 
 
-def train(epoch):
+def train(epoch, k_closet=30):
     if args.test_only:
-        topk = 3
+        k_closet = 3
         img_triplet, label_triplet = pickle.load(open("./pickle/train_1.p", 'rb'))
         train_dataset = utils.TinyImageNet(img_triplet, label_triplet, transform=transform_train)
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=5, num_workers=2,
@@ -171,9 +171,10 @@ def train(epoch):
 
     f_img_train = []
     label_train = []
-    train_bacth_accuracy = []
+    #train_bacth_accuracy = []
     loss_epoch = 0
     for _, (images, lables) in enumerate(train_loader):
+        #start = time.time()
         if use_cuda:
             q, p, n, q_label = images[0].cuda(), images[1].cuda(), images[2].cuda(), lables[0].cuda()
         else:
@@ -191,40 +192,41 @@ def train(epoch):
             loss_epoch += loss.data[0]
         f_img_train.append(f_q)
         label_train.append(q_label)
-
+        #end = time.time()
+        #print("time for one batch {} s".format(end-start))
         # calculate train_acc so use train_loader as the test_loader
-        train_accuracy = []
-        for f_img_test_current, label_test_current in zip(f_q, q_label):
-            f_img_test_current = f_img_test_current.reshape(1, 4096)
-            f_img_test_current = f_img_test_current.expand(f_q.shape[0], 4096)
-            distance = pdist(f_img_test_current, f_q)
-            predicted = q_label[distance.topk(topk)[1]]
-            train_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / topk)
-        train_bacth_accuracy.append(np.mean(train_accuracy))
-    train_accuracy_epoch = np.mean(train_bacth_accuracy)
+    #     train_accuracy = []
+    #     for f_img_test_current, label_test_current in zip(f_q, q_label):
+    #         f_img_test_current = f_img_test_current.reshape(1, 4096)
+    #         f_img_test_current = f_img_test_current.expand(f_q.shape[0], 4096)
+    #         distance = pdist(f_img_test_current, f_q)
+    #         predicted = q_label[distance.topk(k_closet, largest=False)[1]]
+    #         train_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
+    #     train_bacth_accuracy.append(np.mean(train_accuracy))
+    # train_accuracy_epoch = np.mean(train_bacth_accuracy)
 
     f_img_train = torch.cat(f_img_train, dim=0)
     label_train = torch.cat(label_train, dim=0)
 
-    # train_accuracy = []
-    # # calculate train_acc so use train_loader as the test_loader
-    # for f_img_test_current, label_test_current in zip(f_img_train, label_train):
-    #     f_img_test_current = f_img_test_current.reshape(1, 4096)
-    #     f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
-    #     distance = pdist(f_img_test_current, f_img_train)
-    #     predicted = label_train[distance.topk(topk)[1]]
-    #     train_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / topk)
-    # train_accuracy_epoch = np.mean(train_accuracy)
+    train_accuracy = []
+    # calculate train_acc so use train_loader as the test_loader
+    for f_img_test_current, label_test_current in zip(f_img_train, label_train):
+        f_img_test_current = f_img_test_current.reshape(1, 4096)
+        f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
+        distance = pdist(f_img_test_current, f_img_train)
+        predicted = label_train[distance.topk(k_closet)[1]]
+        train_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
+    train_accuracy_epoch = np.mean(train_accuracy)
 
     print("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
     logger.info("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
     return loss_epoch, train_accuracy_epoch, f_img_train, label_train
 
 
-def test(epoch, f_img_train, label_train):
+def test(epoch, f_img_train, label_train, k_closet=30):
     net.eval()
     if args.test_only:
-        topk = 3
+        k_closet = 3
     # f_img_train = []
     # label_train = []
     # for _, (imgs_train, labels_train) in enumerate(train_loader):
@@ -252,8 +254,8 @@ def test(epoch, f_img_train, label_train):
         f_img_test_current = f_img_test_current.reshape(1, 4096)
         f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
         distance = pdist(f_img_test_current, f_img_train)
-        predicted = label_train[distance.topk(topk)[1]]
-        test_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / topk)
+        predicted = label_train[distance.topk(k_closet)[1]]
+        test_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
     test_accuracy_epoch = np.mean(test_accuracy)
 
     print("=> Epoch: [{}/{}] | Testing Accuracy: [{}]".format(
