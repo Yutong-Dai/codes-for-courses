@@ -30,6 +30,7 @@ import pickle
 import utils
 # General setups
 parser = argparse.ArgumentParser(description='PyTorch TinyImageNet Training 200 classes')
+parser.add_argument('--net', '-n', default="resnet18", help='model to use')
 parser.add_argument('--num_epochs', '-e', default=10, type=int, help='total training epoch')
 parser.add_argument('--batch_size', '-b', default=100, type=int, help='batch size')
 parser.add_argument('--train_all', '-a', action='store_true', help='train all layers or only the last fc layer')
@@ -76,7 +77,7 @@ print("Loading Data...")
 logger.info("Loading Data...")
 img, label = utils.generate_testing_data_set()
 test_dataset = utils.TinyImageNet(img, label, train=False, transform=transform_test)
-test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers=8)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False)
 
 if args.test_only:
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=2, shuffle=False, num_workers=2,
@@ -86,9 +87,14 @@ logger.info("Model setting...")
 
 use_cuda = torch.cuda.is_available()
 start_epoch = 0
-net = torchvision.models.resnet.ResNet(torchvision.models.resnet.Bottleneck, [3, 4, 23, 3])
-net.load_state_dict(torch.load("../data/model/resnet101-5d3b4d8f.pth"))
-
+if args.net == "resnet18":
+    print("using resnet18")
+    net = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
+    net.load_state_dict(torch.load("../data/model/resnet18-5c106cde.pth"))
+else:
+    print("using resnet101")
+    net = torchvision.models.resnet.ResNet(torchvision.models.resnet.Bottleneck, [3, 4, 23, 3])
+    net.load_state_dict(torch.load("../data/model/resnet101-5d3b4d8f.pth"))
 # Do not change the layers that are pre-trained with the only exception
 # on the last full-connected layer.
 if not args.train_all:
@@ -98,7 +104,7 @@ if not args.train_all:
 net.fc = nn.Linear(in_features=net.fc.in_features, out_features=4096)
 
 #optimizer = optim.Adam(net.parameters())
-optimizer = optim.SGD(net.parameters(), lr=0.05, momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
 
 criterion = nn.TripletMarginLoss(margin=1.0, p=2, eps=1e-06)
 training_loss_seq = []
@@ -116,7 +122,7 @@ if args.resume:
         net.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
         training_loss_seq = checkpoint['training_loss_seq']
-        training_accuracy_seq = checkpoint['training_accuracy_seq']
+        #training_accuracy_seq = checkpoint['training_accuracy_seq']
         testing_accuracy_seq = checkpoint['testing_accuracy_seq']
         testing_best_accuracy = checkpoint['testing_best_accuracy']
         print("=> loaded checkpoint '{}' (epoch {})"
@@ -160,11 +166,12 @@ def train(epoch, k_closet=30):
         else:
             img_triplet, label_triplet = pickle.load(open("./pickle/train_{}.p".format(epoch), 'rb'))
         train_dataset = utils.TinyImageNet(img_triplet, label_triplet, train=True, transform=transform_train)
-        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
+        train_loader = torch.utils.data.DataLoader(train_dataset,
+                                                   batch_size=batch_size, shuffle=True, num_workers=32)
 
     global current_learningRate
     net.train()
-    if (epoch+1) % 10 == 0:
+    if (epoch+1) % 5 == 0:
         current_learningRate /= 2
         logger.info("=> Learning rate is updated!")
         utils.update_learning_rate(optimizer, current_learningRate)
@@ -188,8 +195,10 @@ def train(epoch, k_closet=30):
 
         if torch.__version__ == '0.4.1':
             loss_epoch += loss.item()
+            # print(loss_epoch)
         else:
             loss_epoch += loss.data[0]
+            # print(loss_epoch)
         f_img_train.append(f_q)
         label_train.append(q_label)
         #end = time.time()
@@ -208,19 +217,22 @@ def train(epoch, k_closet=30):
     f_img_train = torch.cat(f_img_train, dim=0)
     label_train = torch.cat(label_train, dim=0)
 
-    train_accuracy = []
-    # calculate train_acc so use train_loader as the test_loader
-    for f_img_test_current, label_test_current in zip(f_img_train, label_train):
-        f_img_test_current = f_img_test_current.reshape(1, 4096)
-        f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
-        distance = pdist(f_img_test_current, f_img_train)
-        predicted = label_train[distance.topk(k_closet)[1]]
-        train_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
-    train_accuracy_epoch = np.mean(train_accuracy)
+    # train_accuracy = []
+    # # calculate train_acc so use train_loader as the test_loader
+    # for f_img_test_current, label_test_current in zip(f_img_train, label_train):
+    #     f_img_test_current = f_img_test_current.reshape(1, 4096)
+    #     f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
+    #     distance = pdist(f_img_test_current, f_img_train)
+    #     predicted = label_train[distance.topk(k_closet)[1]]
+    #     train_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
+    # train_accuracy_epoch = np.mean(train_accuracy)
 
-    print("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
-    logger.info("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
-    return loss_epoch, train_accuracy_epoch, f_img_train, label_train
+    # print("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
+    # logger.info("=> Epoch: [{}/{}] | Loss:[{}] | Training Accuracy: [{}]".format(epoch + 1, args.num_epochs, loss_epoch, train_accuracy_epoch))
+    # return loss_epoch, train_accuracy_epoch, f_img_train, label_train
+    print("=> Epoch: [{}/{}] | Loss:[{}]".format(epoch + 1, args.num_epochs, loss_epoch))
+    logger.info("=> Epoch: [{}/{}] | Loss:[{}]".format(epoch + 1, args.num_epochs, loss_epoch))
+    return loss_epoch, f_img_train, label_train
 
 
 def test(epoch, f_img_train, label_train, k_closet=30):
@@ -237,25 +249,40 @@ def test(epoch, f_img_train, label_train, k_closet=30):
     # f_img_train = torch.cat(f_img_train, dim=0)
     # label_train = torch.cat(label_train, dim=0)
 
-    f_img_test = []
-    label_test = []
+    # f_img_test = []
+    # label_test = []
+    # for _, (imgs_test, labels_test) in enumerate(test_loader):
+    #     if use_cuda:
+    #         imgs_test, labels_test = imgs_test.cuda(), labels_test.cuda()
+    #     #f_img_test, label_test = Variable(f_img_test), Variable(label_test)
+    #     f_img_test.append(net(imgs_test))
+    #     label_test.append(labels_test)
+
+    # f_img_test = torch.cat(f_img_test, dim=0)
+    # label_test = torch.cat(label_test, dim=0)
+
+    # test_accuracy = []
+    # for f_img_test_current, label_test_current in zip(f_img_test, label_test):
+    #     f_img_test_current = f_img_test_current.reshape(1, 4096)
+    #     f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
+    #     distance = pdist(f_img_test_current, f_img_train)
+    #     predicted = label_train[distance.topk(k_closet)[1]]
+    #     test_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
+    # test_accuracy_epoch = np.mean(test_accuracy)
+
+    test_accuracy = []
     for _, (imgs_test, labels_test) in enumerate(test_loader):
         if use_cuda:
             imgs_test, labels_test = imgs_test.cuda(), labels_test.cuda()
-        #f_img_test, label_test = Variable(f_img_test), Variable(label_test)
-        f_img_test.append(net(imgs_test))
-        label_test.append(labels_test)
-
-    f_img_test = torch.cat(f_img_test, dim=0)
-    label_test = torch.cat(label_test, dim=0)
-
-    test_accuracy = []
-    for f_img_test_current, label_test_current in zip(f_img_test, label_test):
-        f_img_test_current = f_img_test_current.reshape(1, 4096)
-        f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
-        distance = pdist(f_img_test_current, f_img_train)
-        predicted = label_train[distance.topk(k_closet)[1]]
-        test_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
+        imgs_test = Variable(imgs_test)
+        with torch.no_grad():
+            f_img_test = net(imgs_test)
+        for f_img_test_current, label_test_current in zip(f_img_test, labels_test):
+            f_img_test_current = f_img_test_current.reshape(1, 4096)
+            f_img_test_current = f_img_test_current.expand(f_img_train.shape[0], 4096)
+            distance = pdist(f_img_test_current, f_img_train)
+            predicted = label_train[distance.topk(k_closet)[1]]
+            test_accuracy.append(float(torch.sum(torch.eq(predicted, label_test_current))) / k_closet)
     test_accuracy_epoch = np.mean(test_accuracy)
 
     print("=> Epoch: [{}/{}] | Testing Accuracy: [{}]".format(
@@ -267,11 +294,13 @@ def test(epoch, f_img_train, label_train, k_closet=30):
 
 
 for epoch in range(start_epoch, args.num_epochs):
-    train_loss, train_accuracy, f_img_train, label_train = train(epoch)
+    #train_loss, train_accuracy, f_img_train, label_train = train(epoch)
+    train_loss, f_img_train, label_train = train(epoch)
+    f_img_train = f_img_train.detach()
+    # if (epoch+1) % 2 == 0:
     test_accuracy = test(epoch, f_img_train, label_train)
-
     training_loss_seq.append(train_loss)
-    training_accuracy_seq.append(train_accuracy)
+    # training_accuracy_seq.append(train_accuracy)
     testing_accuracy_seq.append(test_accuracy)
 
     is_best = testing_accuracy_seq[-1] > testing_best_accuracy
@@ -282,7 +311,7 @@ for epoch in range(start_epoch, args.num_epochs):
         "state_dict": net.state_dict(),  # if use_cuda else net.module.state_dict()
         "optimizer": optimizer.state_dict(),
         "training_loss_seq": training_loss_seq,
-        "training_accuracy_seq": training_accuracy_seq,
+        # "training_accuracy_seq": training_accuracy_seq,
         "testing_accuracy_seq": testing_accuracy_seq,
         "testing_best_accuracy": testing_best_accuracy
     }
