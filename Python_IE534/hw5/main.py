@@ -90,11 +90,13 @@ start_epoch = 0
 if args.net == "resnet18":
     print("using resnet18")
     net = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
-    net.load_state_dict(torch.load("../data/model/resnet18-5c106cde.pth"))
+    if not os.path.isfile(args.resume):
+        net.load_state_dict(torch.load("../data/model/resnet18-5c106cde.pth"))
 else:
     print("using resnet101")
     net = torchvision.models.resnet.ResNet(torchvision.models.resnet.Bottleneck, [3, 4, 23, 3])
-    net.load_state_dict(torch.load("../data/model/resnet101-5d3b4d8f.pth"))
+    if not os.path.isfile(args.resume):
+        net.load_state_dict(torch.load("../data/model/resnet101-5d3b4d8f.pth"))
 # Do not change the layers that are pre-trained with the only exception
 # on the last full-connected layer.
 if not args.train_all:
@@ -103,7 +105,12 @@ if not args.train_all:
 # change the last fc layer for cifar100
 net.fc = nn.Linear(in_features=net.fc.in_features, out_features=4096)
 
-#optimizer = optim.Adam(net.parameters())
+if use_cuda:
+    net.cuda()
+    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
+    print(torch.cuda.device_count())
+    cudnn.benchmark = True
+
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
 
 criterion = nn.TripletMarginLoss(margin=1.0, p=2, eps=1e-06)
@@ -145,12 +152,6 @@ logger.info("Model Training...")
 # use up-to-date learning rate; for resume purpose
 for param_group in optimizer.param_groups:
     current_learningRate = param_group['lr']
-
-if use_cuda:
-    net.cuda()
-    net = torch.nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
-    print(torch.cuda.device_count())
-    cudnn.benchmark = True
 
 
 def train(epoch, k_closet=30):
