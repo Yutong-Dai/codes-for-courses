@@ -187,6 +187,46 @@ def train(epoch, train_loader):
     return loss_epoch
 
 
+# def train_new(epoch, train_loader):
+#     global current_learningRate
+#     net.train()
+#     if (epoch+1) % 5 == 0:
+#         current_learningRate /= 2
+#         logger.info("=> Learning rate is updated!")
+#         utils.update_learning_rate(optimizer, current_learningRate)
+
+#     loss_epoch = 0
+#     f_img_train = []
+#     label_train = []
+#     start = time.time()
+#     for _, (images, lables) in enumerate(train_loader):
+#         if use_cuda:
+#             q, p, n, q_label = images[0].cuda(), images[1].cuda(), images[2].cuda(), lables[0].cuda()
+#         else:
+#             q, p, n, q_label = images[0], images[1], images[2], lables[0]
+#         optimizer.zero_grad()
+#         q, p, n = Variable(q), Variable(p), Variable(n)
+#         f_q, f_p, f_n = net(q), net(p), net(n)
+#         loss = criterion(f_q, f_p, f_n)
+#         loss.backward()
+#         optimizer.step()
+
+#         if torch.__version__ == '0.4.1':
+#             loss_epoch += loss.item()
+#         else:
+#             loss_epoch += loss.data[0]
+#         f_img_train.append(f_q)
+#         label_train.append(q_label)
+#     loss_epoch /= 100000
+#     end = time.time()
+#     logger.info("Current Epoch Takes {} min".format((end-start) / 60))
+#     print("=> Epoch: [{}/{}] | Loss:[{}]".format(epoch + 1, args.num_epochs, loss_epoch))
+#     logger.info("=> Epoch: [{}/{}] | Loss:[{}]".format(epoch + 1, args.num_epochs, loss_epoch))
+#     train_checkpoint = {"state_dict": net.state_dict(), "loss": loss_epoch, "optimizer": optimizer.state_dict(), "epoch": epoch}
+#     torch.save(train_checkpoint, "./pickle/train_checkpoint_{}.pth".format(epoch))
+#     return loss_epoch
+
+
 def test(epoch, train_loader, k_closet=30):
     net.eval()
     if args.test_only:
@@ -195,6 +235,7 @@ def test(epoch, train_loader, k_closet=30):
     label_train = []
     test_accuracy = []
     with torch.no_grad():
+        start = time.time()
         print("Calculate Training Feature Embedding...")
         for _, (images, lables) in enumerate(train_loader):
             if use_cuda:
@@ -207,7 +248,8 @@ def test(epoch, train_loader, k_closet=30):
             label_train.append(q_label)
         f_img_train = torch.cat(f_img_train, dim=0)
         label_train = torch.cat(label_train, dim=0)
-
+        end = time.time()
+        print("Finish in {} min".format((end-start)/60))
         print("Testing...")
         for _, (imgs_test, labels_test) in enumerate(test_loader):
             if use_cuda:
@@ -251,6 +293,11 @@ for epoch in range(start_epoch, args.num_epochs):
         print("Loading from history..")
         train_checkpoint = torch.load("./pickle/train_checkpoint_{}.pth".format(epoch))
         net.load_state_dict(train_checkpoint["state_dict"])
+        try:
+            train_loss = train_checkpoint["loss"]
+        except KeyError:
+            train_loss = 0
+
     test_accuracy = test(epoch, train_loader, k_closet=30)
     training_loss_seq.append(train_loss)
     testing_accuracy_seq.append(test_accuracy)
