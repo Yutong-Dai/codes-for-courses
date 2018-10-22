@@ -56,6 +56,7 @@ top10 = {"idx_of_fig_path_top10": [], "distance_of_top10": [], "predicted_top10"
 bottom10 = {"idx_of_fig_path_bottom10": [], "distance_of_bottom10": [], "predicted_bottom10": []}
 
 print("begin validation!")
+net.eval()
 with torch.no_grad():
     for _, (imgs_test, labels_test) in enumerate(test_loader):
         if use_cuda:
