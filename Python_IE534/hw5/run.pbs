@@ -4,6 +4,7 @@
 #PBS -l walltime=48:00:00
 #PBS -e $PBS_JOBNAME.$PBS_JOBID.err
 #PBS -o $PBS_JOBNAME.$PBS_JOBID.out
+#PBS -m bea
 #PBS -M yutongd3@illinois.edu
 cd /u/training/tra380/IE534/hw5
 . /opt/modules/default/init/bash
