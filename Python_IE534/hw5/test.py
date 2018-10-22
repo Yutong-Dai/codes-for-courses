@@ -17,18 +17,13 @@ import time
 import utils
 
 
-class Args:
-    def __init__(self):
-        self.batch_size = 10
-        self.train_all = True
-        self.net = "resnet18"
-        self.resume = './hw5_checkpoint.pth.tar'
-        self.test_only = False
+parser = argparse.ArgumentParser(description='PyTorch TinyImageNet Training 200 classes')
+parser.add_argument('--epoch', '-e', default="14", type=int, help='epoch to use')
+args = parser.parse_args()
 
 
-args = Args()
 pdist = nn.PairwiseDistance(p=2)
-epoch = 5  # load idx
+epoch = args.epoch  # load idx
 net = torchvision.models.resnet.ResNet(torchvision.models.resnet.BasicBlock, [2, 2, 2, 2])
 net.fc = nn.Linear(in_features=net.fc.in_features, out_features=4096)
 use_cuda = torch.cuda.is_available()
@@ -41,7 +36,6 @@ if use_cuda:
 train_checkpoint = torch.load("./pickle/train_checkpoint_{}.pth".format(epoch))
 state_dict = train_checkpoint["state_dict"]
 net.load_state_dict(state_dict)
-dist = nn.PairwiseDistance(p=2)
 
 print("Data Preparation...")
 transform_train = transforms.Compose([
