@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=16:xk
+#PBS -N hw7-1a
+#PBS -l walltime=48:00:00
+#PBS -e $PBS_JOBNAME.$PBS_JOBID.err
+#PBS -o $PBS_JOBNAME.$PBS_JOBID.out
+#PBS -m bea
+#PBS -M yutongd3@illinois.edu
+cd /u/training/tra380/IE534/hw7/1a
+. /opt/modules/default/init/bash
+module load bwpy/2.0.0-pre2
+module load cudatoolkit
+aprun -n 1 -N 1 python3.6 BOW_sentiment_analysis.py
