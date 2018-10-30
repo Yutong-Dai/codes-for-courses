@@ -1,0 +1,72 @@
+2018-10-29 22:44:43,322 - [INFO] - Model Configurations:
+2018-10-29 22:44:43,322 - [INFO] - => BOW:ta | embedding dimension:500 | optimizer:adam | learning rate:0.001 | epoch:8
+2018-10-29 22:44:47,197 - [INFO] - Epoch:0 | Train Accuracy:83.04 | Epoch Loss:0.3880477864742279 | Time Elpased:1.6803274154663086
+2018-10-29 22:44:47,445 - [INFO] - Epoch:0 | Test Accuracy:86.3 | Epoch Loss:0.3264203131198883 | Time Elpased:0.24773240089416504
+2018-10-29 22:44:48,014 - [INFO] - Epoch:1 | Train Accuracy:85.944 | Epoch Loss:0.33269230687618256 | Time Elpased:0.5680086612701416
+2018-10-29 22:44:48,262 - [INFO] - Epoch:1 | Test Accuracy:86.768 | Epoch Loss:0.31164985156059266 | Time Elpased:0.24764299392700195
+2018-10-29 22:44:48,830 - [INFO] - Epoch:2 | Train Accuracy:86.688 | Epoch Loss:0.31696044325828554 | Time Elpased:0.5677196979522705
+2018-10-29 22:44:49,078 - [INFO] - Epoch:2 | Test Accuracy:86.464 | Epoch Loss:0.3171260597705841 | Time Elpased:0.24759650230407715
+2018-10-29 22:44:49,646 - [INFO] - Epoch:3 | Train Accuracy:86.772 | Epoch Loss:0.3123567566871643 | Time Elpased:0.5678880214691162
+2018-10-29 22:44:49,894 - [INFO] - Epoch:3 | Test Accuracy:87.532 | Epoch Loss:0.2976834088563919 | Time Elpased:0.24758291244506836
+2018-10-29 22:44:50,462 - [INFO] - Epoch:4 | Train Accuracy:87.26 | Epoch Loss:0.30481011867523194 | Time Elpased:0.5677990913391113
+2018-10-29 22:44:50,710 - [INFO] - Epoch:4 | Test Accuracy:83.548 | Epoch Loss:0.35717084860801696 | Time Elpased:0.2476060390472412
+2018-10-29 22:44:51,279 - [INFO] - Epoch:5 | Train Accuracy:87.608 | Epoch Loss:0.2995785299539566 | Time Elpased:0.5680999755859375
+2018-10-29 22:44:51,527 - [INFO] - Epoch:5 | Test Accuracy:85.588 | Epoch Loss:0.3336866728067398 | Time Elpased:0.24760937690734863
+2018-10-29 22:44:52,095 - [INFO] - Epoch:6 | Train Accuracy:87.604 | Epoch Loss:0.2929587012529373 | Time Elpased:0.5677149295806885
+2018-10-29 22:44:52,343 - [INFO] - Epoch:6 | Test Accuracy:88.104 | Epoch Loss:0.2837114020586014 | Time Elpased:0.24764752388000488
+2018-10-29 22:44:52,911 - [INFO] - Epoch:7 | Train Accuracy:87.976 | Epoch Loss:0.28947264683246615 | Time Elpased:0.5677831172943115
+2018-10-29 22:44:53,159 - [INFO] - Epoch:7 | Test Accuracy:85.028 | Epoch Loss:0.3343718874454498 | Time Elpased:0.24770307540893555
+2018-10-29 22:44:53,204 - [INFO] - Model Configurations:
+2018-10-29 22:44:53,204 - [INFO] - => BOW:under | embedding dimension:300 | optimizer:adam | learning rate:0.001 | epoch:8
+2018-10-29 22:44:53,776 - [INFO] - Epoch:0 | Train Accuracy:82.48 | Epoch Loss:0.40093955492973327 | Time Elpased:0.5696249008178711
+2018-10-29 22:44:54,023 - [INFO] - Epoch:0 | Test Accuracy:83.072 | Epoch Loss:0.3783447592258453 | Time Elpased:0.24744868278503418
+2018-10-29 22:44:54,593 - [INFO] - Epoch:1 | Train Accuracy:85.61999999999999 | Epoch Loss:0.33644186770915985 | Time Elpased:0.5690875053405762
+2018-10-29 22:44:54,841 - [INFO] - Epoch:1 | Test Accuracy:77.924 | Epoch Loss:0.47463420224189756 | Time Elpased:0.24732041358947754
+2018-10-29 22:44:55,410 - [INFO] - Epoch:2 | Train Accuracy:86.284 | Epoch Loss:0.32289812529087064 | Time Elpased:0.5691063404083252
+2018-10-29 22:44:55,658 - [INFO] - Epoch:2 | Test Accuracy:83.184 | Epoch Loss:0.36998129868507384 | Time Elpased:0.24730634689331055
+2018-10-29 22:44:56,227 - [INFO] - Epoch:3 | Train Accuracy:86.836 | Epoch Loss:0.3128430823087692 | Time Elpased:0.5690891742706299
+2018-10-29 22:44:56,475 - [INFO] - Epoch:3 | Test Accuracy:86.60799999999999 | Epoch Loss:0.3111754897832871 | Time Elpased:0.24742412567138672
+2018-10-29 22:44:57,045 - [INFO] - Epoch:4 | Train Accuracy:86.844 | Epoch Loss:0.3098368116617203 | Time Elpased:0.5690474510192871
+2018-10-29 22:44:57,292 - [INFO] - Epoch:4 | Test Accuracy:88.12 | Epoch Loss:0.2887165439128876 | Time Elpased:0.24754595756530762
+2018-10-29 22:44:57,862 - [INFO] - Epoch:5 | Train Accuracy:87.232 | Epoch Loss:0.3068299363851547 | Time Elpased:0.5689384937286377
+2018-10-29 22:44:58,110 - [INFO] - Epoch:5 | Test Accuracy:86.104 | Epoch Loss:0.3214749916791916 | Time Elpased:0.2474076747894287
+2018-10-29 22:44:58,679 - [INFO] - Epoch:6 | Train Accuracy:87.35199999999999 | Epoch Loss:0.3010570949316025 | Time Elpased:0.5691492557525635
+2018-10-29 22:44:58,927 - [INFO] - Epoch:6 | Test Accuracy:87.71600000000001 | Epoch Loss:0.291427338719368 | Time Elpased:0.24735164642333984
+2018-10-29 22:44:59,497 - [INFO] - Epoch:7 | Train Accuracy:87.7 | Epoch Loss:0.29649109494686127 | Time Elpased:0.5692689418792725
+2018-10-29 22:44:59,745 - [INFO] - Epoch:7 | Test Accuracy:87.968 | Epoch Loss:0.28830122685432436 | Time Elpased:0.24767541885375977
+2018-10-29 22:44:59,855 - [INFO] - Model Configurations:
+2018-10-29 22:44:59,856 - [INFO] - => BOW:over | embedding dimension:2000 | optimizer:adam | learning rate:0.001 | epoch:8
+2018-10-29 22:45:01,878 - [INFO] - Epoch:0 | Train Accuracy:84.044 | Epoch Loss:0.36430249345302584 | Time Elpased:2.0094220638275146
+2018-10-29 22:45:02,456 - [INFO] - Epoch:0 | Test Accuracy:86.752 | Epoch Loss:0.3088855744600296 | Time Elpased:0.5775368213653564
+2018-10-29 22:45:04,460 - [INFO] - Epoch:1 | Train Accuracy:86.604 | Epoch Loss:0.3133620739579201 | Time Elpased:2.003018379211426
+2018-10-29 22:45:05,038 - [INFO] - Epoch:1 | Test Accuracy:87.616 | Epoch Loss:0.28910313427448275 | Time Elpased:0.5774762630462646
+2018-10-29 22:45:07,046 - [INFO] - Epoch:2 | Train Accuracy:87.568 | Epoch Loss:0.29524216932058334 | Time Elpased:2.007695198059082
+2018-10-29 22:45:07,623 - [INFO] - Epoch:2 | Test Accuracy:88.62400000000001 | Epoch Loss:0.2769375150203705 | Time Elpased:0.5769925117492676
+2018-10-29 22:45:09,637 - [INFO] - Epoch:3 | Train Accuracy:88.116 | Epoch Loss:0.27639900904893877 | Time Elpased:2.0138895511627197
+2018-10-29 22:45:10,215 - [INFO] - Epoch:3 | Test Accuracy:72.86 | Epoch Loss:0.7042637373209 | Time Elpased:0.5774197578430176
+2018-10-29 22:45:12,230 - [INFO] - Epoch:4 | Train Accuracy:89.25999999999999 | Epoch Loss:0.25662774801254273 | Time Elpased:2.014631748199463
+2018-10-29 22:45:12,808 - [INFO] - Epoch:4 | Test Accuracy:85.54 | Epoch Loss:0.3055450373291969 | Time Elpased:0.5775747299194336
+2018-10-29 22:45:14,826 - [INFO] - Epoch:5 | Train Accuracy:89.96 | Epoch Loss:0.23597879332304 | Time Elpased:2.0173444747924805
+2018-10-29 22:45:15,404 - [INFO] - Epoch:5 | Test Accuracy:82.596 | Epoch Loss:0.4510683804154396 | Time Elpased:0.57759690284729
+2018-10-29 22:45:17,422 - [INFO] - Epoch:6 | Train Accuracy:90.912 | Epoch Loss:0.21472028705477714 | Time Elpased:2.017299175262451
+2018-10-29 22:45:18,000 - [INFO] - Epoch:6 | Test Accuracy:92.16 | Epoch Loss:0.2245769137740135 | Time Elpased:0.5774455070495605
+2018-10-29 22:45:20,017 - [INFO] - Epoch:7 | Train Accuracy:91.792 | Epoch Loss:0.1942508909702301 | Time Elpased:2.0170693397521973
+2018-10-29 22:45:20,595 - [INFO] - Epoch:7 | Test Accuracy:86.412 | Epoch Loss:0.3023195540308952 | Time Elpased:0.577218770980835
+2018-10-29 22:45:20,748 - [INFO] - Model Configurations:
+2018-10-29 22:45:20,749 - [INFO] - => BOW:ta | embedding dimension:500 | optimizer:sgd | learning rate:0.001 | epoch:8
+2018-10-29 22:45:21,278 - [INFO] - Epoch:0 | Train Accuracy:65.584 | Epoch Loss:0.620936936378479 | Time Elpased:0.5275681018829346
+2018-10-29 22:45:21,526 - [INFO] - Epoch:0 | Test Accuracy:76.916 | Epoch Loss:0.5383591346740723 | Time Elpased:0.24819540977478027
+2018-10-29 22:45:22,054 - [INFO] - Epoch:1 | Train Accuracy:77.208 | Epoch Loss:0.5078320755958557 | Time Elpased:0.5277385711669922
+2018-10-29 22:45:22,303 - [INFO] - Epoch:1 | Test Accuracy:80.752 | Epoch Loss:0.4624811196327209 | Time Elpased:0.24809551239013672
+2018-10-29 22:45:22,831 - [INFO] - Epoch:2 | Train Accuracy:79.636 | Epoch Loss:0.45834922122955324 | Time Elpased:0.5275607109069824
+2018-10-29 22:45:23,080 - [INFO] - Epoch:2 | Test Accuracy:81.828 | Epoch Loss:0.4264510900974274 | Time Elpased:0.24825191497802734
+2018-10-29 22:45:23,608 - [INFO] - Epoch:3 | Train Accuracy:81.028 | Epoch Loss:0.43238342785835265 | Time Elpased:0.5277845859527588
+2018-10-29 22:45:23,856 - [INFO] - Epoch:3 | Test Accuracy:82.772 | Epoch Loss:0.40551189303398133 | Time Elpased:0.24818992614746094
+2018-10-29 22:45:24,385 - [INFO] - Epoch:4 | Train Accuracy:81.804 | Epoch Loss:0.41482248520851134 | Time Elpased:0.5281763076782227
+2018-10-29 22:45:24,634 - [INFO] - Epoch:4 | Test Accuracy:83.17999999999999 | Epoch Loss:0.39097765111923216 | Time Elpased:0.24869608879089355
+2018-10-29 22:45:25,163 - [INFO] - Epoch:5 | Train Accuracy:82.248 | Epoch Loss:0.4023046054840088 | Time Elpased:0.5282402038574219
+2018-10-29 22:45:25,411 - [INFO] - Epoch:5 | Test Accuracy:83.804 | Epoch Loss:0.3779009625911713 | Time Elpased:0.24822115898132324
+2018-10-29 22:45:25,939 - [INFO] - Epoch:6 | Train Accuracy:82.904 | Epoch Loss:0.39274480199813844 | Time Elpased:0.5273833274841309
+2018-10-29 22:45:26,188 - [INFO] - Epoch:6 | Test Accuracy:84.224 | Epoch Loss:0.3701642503738403 | Time Elpased:0.2481539249420166
+2018-10-29 22:45:26,716 - [INFO] - Epoch:7 | Train Accuracy:83.14399999999999 | Epoch Loss:0.38758968663215637 | Time Elpased:0.5276708602905273
+2018-10-29 22:45:26,964 - [INFO] - Epoch:7 | Test Accuracy:84.2 | Epoch Loss:0.3665238230228424 | Time Elpased:0.2482316493988037

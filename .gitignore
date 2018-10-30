@@ -10,9 +10,6 @@ Python_IE534/hw4/tf_checkpoint.pth.tar
 Python_IE534/hw4/tf_model_best.pth.tar
 Python_IE534/data/tiny-imagenet-200
 Python_IE534/data/model/resnet101-5d3b4d8f.pth
-
-Python_IE534/hw4/.ipynb_checkpoints/hw4_resnet-checkpoint.py
-
 Python_IE411/.ipynb_checkpoints/hw4-checkpoint.ipynb
 Python_IE534/hw5/.ipynb_checkpoints/main-checkpoint.py
 Python_IE534/hw5/hw5_checkpoint.pth.tar
@@ -26,4 +23,4 @@ Python_IE534/hw5/archived/hw5_checkpoint.pth.tar
 Python_IE534/hw5/checkpoint.pth.tar
 Python_IE534/hw6/output/
 Python_IE534/data/aclImdb/
-Python_IE534/hw7/.ipynb_checkpoints/explore-checkpoint.ipynb
+Python_IE534/data/glove.840B.300d.txt
