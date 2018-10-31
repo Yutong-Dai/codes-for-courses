@@ -22,7 +22,7 @@ import logging
 log_level = logging.INFO
 logger = logging.getLogger()
 logger.setLevel(log_level)
-handler = logging.FileHandler("2a.log")
+handler = logging.FileHandler("2b.log")
 handler.setLevel(log_level)
 formatter = logging.Formatter('%(asctime)s - [%(levelname)s] - %(message)s')
 handler.setFormatter(formatter)
