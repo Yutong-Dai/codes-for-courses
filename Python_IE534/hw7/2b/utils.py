@@ -47,11 +47,10 @@ class LockedDropout(nn.Module):
         return mask * x
 
 
-def train(x_train, y_train, model, opt='adam', LR=0.001, batch_size=200, no_of_epochs=20, extension="ta"):
-    logger.info("[Train] | Model:{} | vocabulary size:{} | embedding dimension:{} | optimizer:{} | learning rate:{}".format(extension,
-                                                                                                                            model.embedding.num_embeddings,
-                                                                                                                            model.embedding.embedding_dim,
-                                                                                                                            opt, LR))
+def train(x_train, y_train, glove_embeddings, model, opt='adam', LR=0.001, batch_size=200, no_of_epochs=20, extension="ta"):
+    logger.info("[Train] | Model:{} | embedding dimension:{} | optimizer:{} | learning rate:{}".format(extension,
+                                                                                                       model.lstm1.out_size,
+                                                                                                       opt, LR))
     model.cuda()
     if (opt == 'adam'):
         optimizer = optim.Adam(model.parameters(), lr=LR)
@@ -79,8 +78,9 @@ def train(x_train, y_train, model, opt='adam', LR=0.001, batch_size=200, no_of_e
                 else:
                     start_index = np.random.randint(sl-sequence_length+1)
                     x_input[j, :] = x[start_index:(start_index+sequence_length)]
-            y_input = np.asarray([y_train[j] for j in I_permutation[i:i+batch_size]], dtype=np.int)
-            data = Variable(torch.LongTensor(x_input)).cuda()
+            x_input = glove_embeddings[x_input]
+            y_input = y_train[I_permutation[i:i+batch_size]]
+            data = Variable(torch.FloatTensor(x_input)).cuda()
             target = Variable(torch.FloatTensor(y_input)).cuda()
             optimizer.zero_grad()
             loss, pred = model(data, target, train=True)
@@ -100,22 +100,16 @@ def train(x_train, y_train, model, opt='adam', LR=0.001, batch_size=200, no_of_e
 
         logger.info("Epoch:{} | Train Accuracy:{} | Epoch Loss:{} | Time Elpased:{}".format(epoch, epoch_acc*100.0,  epoch_loss, float(time.time()-time1)))
 
-    torch.save(model, './results/RNN_{}_{}_{}_{}.model'.format(extension, model.embedding.num_embeddings,
-                                                               model.embedding.embedding_dim,
-                                                               opt))
+    torch.save(model, './results/RNN_{}_{}_{}.model'.format(extension, model.lstm1.out_size, opt))
     data = [train_loss, train_accu]
     data = np.asarray(data)
-    np.save('./results/data_train_{}_{}_{}_{}.npy'.format(extension,
-                                                          model.embedding.num_embeddings,
-                                                          model.embedding.embedding_dim,
-                                                          opt), data)
+    np.save('./results/data_train_{}_{}_{}.npy'.format(extension, model.lstm1.out_size, opt), data)
 
 
-def test(x_test, y_test, model, opt='adam', LR=0.001, batch_size=200, no_of_test=9, extension="ta"):
-    logger.info("[Test] | Model:{} | embedding dimension:{} | vocabulary size:{} | optimizer:{} | learning rate:{}".format(extension,
-                                                                                                                           model.embedding.num_embeddings,
-                                                                                                                           model.embedding.embedding_dim,
-                                                                                                                           opt, LR))
+def test(x_test, y_test, glove_embeddings, model, opt='adam', LR=0.001, batch_size=200, no_of_test=9, extension="ta"):
+    logger.info("[Test] | Model:{} | embedding dimension:{} | optimizer:{} | learning rate:{}".format(extension,
+                                                                                                      model.lstm1.out_size,
+                                                                                                      opt, LR))
     model.cuda()
     L_Y_test = len(y_test)
     test_accu = []
@@ -137,8 +131,9 @@ def test(x_test, y_test, model, opt='adam', LR=0.001, batch_size=200, no_of_test
                 else:
                     start_index = np.random.randint(sl-sequence_length+1)
                     x_input[j, :] = x[start_index:(start_index+sequence_length)]
-            y_input = np.asarray([y_test[j] for j in I_permutation[i:i+batch_size]], dtype=np.int)
-            data = Variable(torch.LongTensor(x_input)).cuda()
+            x_input = glove_embeddings[x_input]
+            y_input = y_test[I_permutation[i:i+batch_size]]
+            data = Variable(torch.FloatTensor(x_input)).cuda()
             target = Variable(torch.FloatTensor(y_input)).cuda()
             with torch.no_grad():
                 loss, pred = model(data, target, train=False)
@@ -158,4 +153,4 @@ def test(x_test, y_test, model, opt='adam', LR=0.001, batch_size=200, no_of_test
 
     data = [test_accu]
     data = np.asarray(data)
-    np.save('./results/data_test_{}_{}_{}.npy'.format(extension, model.embedding.num_embeddings, model.embedding.embedding_dim), data)
+    np.save('./results/data_test_{}_{}_{}.npy'.format(extension, model.lstm1.out_size, opt), data)

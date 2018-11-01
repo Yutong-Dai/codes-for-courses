@@ -6,7 +6,7 @@
 #PBS -o $PBS_JOBNAME.$PBS_JOBID.out
 #PBS -m bea
 #PBS -M yutongd3@illinois.edu
-cd /u/training/tra380/IE534/hw7/2a
+cd /u/training/tra380/IE534/hw7/2b
 . /opt/modules/default/init/bash
 module load bwpy/2.0.0-pre2
 module load cudatoolkit

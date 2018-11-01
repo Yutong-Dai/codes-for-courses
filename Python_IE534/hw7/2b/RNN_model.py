@@ -43,11 +43,9 @@ class StatefulLSTM(nn.Module):
 
 
 class RNN_model(nn.Module):
-    def __init__(self, vocab_size, no_of_hidden_units):
+    def __init__(self, no_of_hidden_units):
         super(RNN_model, self).__init__()
-
-        self.embedding = nn.Embedding(vocab_size, no_of_hidden_units)
-        self.lstm1 = StatefulLSTM(no_of_hidden_units, no_of_hidden_units)
+        self.lstm1 = StatefulLSTM(300, no_of_hidden_units)
         self.bn_lstm1 = nn.BatchNorm1d(no_of_hidden_units)
         self.dropout1 = LockedDropout()
         self.fc_output = nn.Linear(no_of_hidden_units, 1)
@@ -58,15 +56,11 @@ class RNN_model(nn.Module):
         self.dropout1.reset_state()
 
     def forward(self, x, t, train=True):
-        # input x is (batch_size, sequence_length)
-        # embed: is of shape (batch_size, sequence_length, in_size)
-        # here in_size is the feature embedding size
-        embed = self.embedding(x)
-        no_of_timesteps = embed.shape[1]
+        no_of_timesteps = x.shape[1]
         self.reset_state()
         outputs = []
         for i in range(no_of_timesteps):
-            h = self.lstm1(embed[:, i, :])
+            h = self.lstm1(x[:, i, :])
             h = self.bn_lstm1(h)
             h = self.dropout1(h, dropout=0.5, train=train)
             outputs.append(h)
