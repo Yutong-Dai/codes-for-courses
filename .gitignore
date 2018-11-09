@@ -25,3 +25,9 @@ Python_IE534/hw6/output/
 Python_IE534/data/aclImdb/
 Python_IE534/data/glove.840B.300d.txt
 Python_IE534/hw7/2a/.ipynb_checkpoints/explore-checkpoint.ipynb
+Python_IE534/data/nlp/glove.840B.300d.txt
+Python_IE534/data/nlp/imdb_dictionary.npy
+Python_IE534/data/nlp/imdb_test.txt
+Python_IE534/data/nlp/imdb_train.txt
+Python_IE534/data/nlp/imdb_train.txt
+Python_IE534/hw7/3a/language.model
