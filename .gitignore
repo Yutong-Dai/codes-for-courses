@@ -31,3 +31,5 @@ Python_IE534/data/nlp/imdb_test.txt
 Python_IE534/data/nlp/imdb_train.txt
 Python_IE534/data/nlp/imdb_train.txt
 Python_IE534/hw7/3a/language.model
+
+*.model

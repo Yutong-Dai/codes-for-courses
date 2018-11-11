@@ -59,9 +59,9 @@ class LockedDropout(nn.Module):
         return mask * x
 
 
-class RNN_language_model(nn.Module):
+class RNN_model(nn.Module):
     def __init__(self, vocab_size, no_of_hidden_units):
-        super(RNN_language_model, self).__init__()
+        super(RNN_model, self).__init__()
 
         self.embedding = nn.Embedding(vocab_size, no_of_hidden_units)  # ,padding_idx=0)
 

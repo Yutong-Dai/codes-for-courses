@@ -59,7 +59,7 @@ def train(x_train, y_train, model,  sequence_length=100, batch_size=200, no_of_e
         for param in model.fc_output.parameters():
             params.append(param)
 
-    optimizer = optim.Adam(model.parameters(), lr=LR)
+    optimizer = optim.Adam(params, lr=LR)
     L_Y_train = len(y_train)
     train_loss = []
     train_accu = []
@@ -117,6 +117,7 @@ def test(x_test, y_test, model,  train_layer, sequence_length, LR=0.001, batch_s
     L_Y_test = len(y_test)
     test_accu = []
     for epoch in range(no_of_test):
+        model.eval()
         epoch_acc = 0.0
         epoch_loss = 0.0
         epoch_counter = 0

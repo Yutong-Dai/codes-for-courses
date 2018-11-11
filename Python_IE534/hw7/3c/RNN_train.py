@@ -18,7 +18,7 @@ import os
 import sys
 
 from utils import train
-from RNN_language_model import RNN_language_model
+from RNN_model import RNN_model
 
 imdb_dictionary = np.load('../preprocessed_data/imdb_dictionary.npy')
 vocab_size = 8000
@@ -41,7 +41,7 @@ y_train[0:12500] = 1
 vocab_size += 1
 batch_size = 200
 no_of_epochs = 20
-model = RNN_language_model(vocab_size, 500)
+model = RNN_model(vocab_size, 500)
 language_model = torch.load('language.model')
 model.embedding.load_state_dict(language_model.embedding.state_dict())
 model.lstm1.lstm.load_state_dict(language_model.lstm1.lstm.state_dict())
@@ -54,5 +54,5 @@ model.bn_lstm3.load_state_dict(language_model.bn_lstm3.state_dict())
 
 train(x_train, y_train, model,  sequence_length=100, batch_size=200, no_of_epochs=20, train_layer="last", LR=0.001)
 train(x_train, y_train, model,  sequence_length=50, batch_size=200, no_of_epochs=20, train_layer="last", LR=0.001)
-train(x_train, y_train, model,  sequence_length=200, batch_size=100, no_of_epochs=20, train_layer="last", LR=0.001)
+train(x_train, y_train, model,  sequence_length=150, batch_size=100, no_of_epochs=20, train_layer="last", LR=0.001)
 train(x_train, y_train, model,  sequence_length=100, batch_size=100, no_of_epochs=20, train_layer="all", LR=0.001)

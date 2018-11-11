@@ -15,8 +15,7 @@ from utils import test
 
 imdb_dictionary = np.load('../preprocessed_data/imdb_dictionary.npy')
 vocab_size = 8000
-# for unknown token
-vocab_size += 1
+
 
 x_test = []
 with io.open('../preprocessed_data/imdb_test.txt', 'r', encoding='utf-8') as f:
@@ -33,6 +32,9 @@ y_test = np.zeros((25000,))
 # positive label
 y_test[0:12500] = 1
 
+# for unknown token
+vocab_size += 1
+
 train_layer, sequence_length = "last", 100
 model = torch.load('./results/RNN_{}_{}.model'.format(train_layer, sequence_length))
 test(x_test, y_test, model,  train_layer, sequence_length, LR=0.001, batch_size=200, no_of_test=9)
@@ -41,7 +43,7 @@ train_layer, sequence_length = "last", 50
 model = torch.load('./results/RNN_{}_{}.model'.format(train_layer, sequence_length))
 test(x_test, y_test, model,  train_layer, sequence_length, LR=0.001, batch_size=200, no_of_test=9)
 
-train_layer, sequence_length = "last", 200
+train_layer, sequence_length = "last", 150
 model = torch.load('./results/RNN_{}_{}.model'.format(train_layer, sequence_length))
 test(x_test, y_test, model,  train_layer, sequence_length, LR=0.001, batch_size=100, no_of_test=9)
 
