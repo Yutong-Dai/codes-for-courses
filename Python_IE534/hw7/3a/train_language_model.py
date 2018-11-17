@@ -11,38 +11,37 @@ import sys
 from RNN_language_model import RNN_language_model
 
 
-
 imdb_dictionary = np.load('../preprocessed_data/imdb_dictionary.npy')
-vocab_size = 8000 # imdb_dictionary.shape[0], 8000 can reduce the number of weights without igonoring too much unique tokens
+vocab_size = 8000  # imdb_dictionary.shape[0], 8000 can reduce the number of weights without igonoring too much unique tokens
 
 x_train = []
-with open('../preprocessed_data/imdb_train.txt','r',encoding='utf-8') as f:
+with open('../preprocessed_data/imdb_train.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
 for line in lines:
     line = line.strip()
     line = line.split(' ')
-    line = np.asarray(line,dtype=np.int)
+    line = np.asarray(line, dtype=np.int)
 
-    line[line>vocab_size] = 0
+    line[line > vocab_size] = 0
 
     x_train.append(line)
 
 x_test = []
-with open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
+with open('../preprocessed_data/imdb_test.txt', 'r', encoding='utf-8') as f:
     lines = f.readlines()
 for line in lines:
     line = line.strip()
     line = line.split(' ')
-    line = np.asarray(line,dtype=np.int)
+    line = np.asarray(line, dtype=np.int)
 
-    line[line>vocab_size] = 0
+    line[line > vocab_size] = 0
 
     x_test.append(line)
 L_Y_test = len(x_test)
 
 
 vocab_size += 1
-model = RNN_language_model(vocab_size,500)
+model = RNN_language_model(vocab_size, 500)
 model.cuda()
 batch_size = 200
 no_of_epochs = 75
@@ -51,21 +50,21 @@ LR = 0.001
 train_loss = []
 train_accu = []
 test_accu = []
-if(opt=='adam'):
+if(opt == 'adam'):
     optimizer = optim.Adam(model.parameters(), lr=LR)
-elif(opt=='sgd'):
+elif(opt == 'sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 L_Y_train = len(x_train)
 
 print('begin training...')
-for epoch in range(0,no_of_epochs):
+for epoch in range(0, no_of_epochs):
     for group in optimizer.param_groups:
         for p in group['params']:
             state = optimizer.state[p]
-            if('step' in state and state['step']>=1024):
+            if('step' in state and state['step'] >= 1024):
                 state['step'] = 1000
 
-    if(epoch==50):
+    if(epoch == 50):
         for param_group in optimizer.param_groups:
             param_group['lr'] = LR/10.0
 
@@ -77,39 +76,39 @@ for epoch in range(0,no_of_epochs):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(L_Y_train)
 
     for i in range(0, L_Y_train, batch_size):
 
         x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
         sequence_length = 50
-        x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
+        x_input = np.zeros((batch_size, sequence_length), dtype=np.int)
         for j in range(batch_size):
             x = np.asarray(x_input2[j])
             sl = x.shape[0]
-            if(sl<sequence_length):
-                x_input[j,0:sl] = x
+            if(sl < sequence_length):
+                x_input[j, 0:sl] = x
             else:
                 start_index = np.random.randint(sl-sequence_length+1)
-                x_input[j,:] = x[start_index:(start_index+sequence_length)]
+                x_input[j, :] = x[start_index:(start_index+sequence_length)]
         x_input = Variable(torch.LongTensor(x_input)).cuda()
 
         optimizer.zero_grad()
         loss, pred = model(x_input)
         loss.backward()
 
-        norm = nn.utils.clip_grad_norm_(model.parameters(),2.0)
+        norm = nn.utils.clip_grad_norm_(model.parameters(), 2.0)
 
         optimizer.step()   # update gradients
-        
-        values,prediction = torch.max(pred,1)
+
+        values, prediction = torch.max(pred, 1)
         prediction = prediction.cpu().data.numpy()
-        accuracy = float(np.sum(prediction==x_input.cpu().data.numpy()[:,1:]))/sequence_length
+        accuracy = float(np.sum(prediction == x_input.cpu().data.numpy()[:, 1:]))/sequence_length
         epoch_acc += accuracy
         epoch_loss += loss.data.item()
         epoch_counter += batch_size
-        
+
         # if (i+batch_size) % 1000 == 0 and epoch==0:
         #    print(i+batch_size, accuracy/batch_size, loss.data.item(), norm, "%.4f" % float(time.time()-time1))
     epoch_acc /= epoch_counter
@@ -121,7 +120,7 @@ for epoch in range(0,no_of_epochs):
     print(epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
 
     # test
-    if((epoch+1)%1==0):
+    if((epoch+1) % 1 == 0):
         model.eval()
 
         epoch_acc = 0.0
@@ -130,33 +129,33 @@ for epoch in range(0,no_of_epochs):
         epoch_counter = 0
 
         time1 = time.time()
-        
+
         I_permutation = np.random.permutation(L_Y_test)
 
         for i in range(0, L_Y_test, batch_size):
             sequence_length = 100
             x_input2 = [x_test[j] for j in I_permutation[i:i+batch_size]]
-            x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
+            x_input = np.zeros((batch_size, sequence_length), dtype=np.int)
             for j in range(batch_size):
                 x = np.asarray(x_input2[j])
                 sl = x.shape[0]
-                if(sl<sequence_length):
-                    x_input[j,0:sl] = x
+                if(sl < sequence_length):
+                    x_input[j, 0:sl] = x
                 else:
                     start_index = np.random.randint(sl-sequence_length+1)
-                    x_input[j,:] = x[start_index:(start_index+sequence_length)]
+                    x_input[j, :] = x[start_index:(start_index+sequence_length)]
             x_input = Variable(torch.LongTensor(x_input)).cuda()
 
             with torch.no_grad():
-                pred = model(x_input,train=False)
-            
-            values,prediction = torch.max(pred,1)
+                pred = model(x_input, train=False)
+
+            values, prediction = torch.max(pred, 1)
             prediction = prediction.cpu().data.numpy()
-            accuracy = float(np.sum(prediction==x_input.cpu().data.numpy()[:,1:]))/sequence_length
+            accuracy = float(np.sum(prediction == x_input.cpu().data.numpy()[:, 1:]))/sequence_length
             epoch_acc += accuracy
             epoch_loss += loss.data.item()
             epoch_counter += batch_size
-            #train_accu.append(accuracy)
+            # train_accu.append(accuracy)
             # if (i+batch_size) % 1000 == 0 and epoch==0:
             #    print(i+batch_size, accuracy/batch_size)
         epoch_acc /= epoch_counter
@@ -169,4 +168,4 @@ for epoch in range(0,no_of_epochs):
 
         print("  ", "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
     torch.cuda.empty_cache()
-torch.save(model,'language.model')
+torch.save(model, 'language.model')
