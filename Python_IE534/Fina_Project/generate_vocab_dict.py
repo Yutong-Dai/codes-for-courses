@@ -8,7 +8,6 @@ Desscription:
 '''
 import nltk
 import pickle
-import argparse
 from collections import Counter
 from pycocotools.coco import COCO
 import logging
@@ -77,13 +76,13 @@ for word, count in counter.items():
         words.append(word)
 words.sort()
 vocab = Vocabulary()
-vocab.add_word('<start>')
-vocab.add_word('<end>')
-vocab.add_word('<unk>')
+vocab.add_word('<<start>>')
+vocab.add_word('<<end>>')
+vocab.add_word('<<unknown>>')
 # for padding purpose
-vocab.add_word('<pad>')
+vocab.add_word('<<padding>>')
 # Add the words to the vocabulary.
-for i, word in enumerate(words):
+for word in words:
     vocab.add_word(word)
 
 with open(save_path, 'wb') as f:
