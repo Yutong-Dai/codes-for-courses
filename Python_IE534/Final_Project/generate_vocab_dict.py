@@ -50,8 +50,9 @@ if __name__ == "__main__":
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    json = "../../../../Desktop/annotations/captions_val2017.json"
-    portion = 0.95
+    json = "./data/annotations/captions_train2014.json"
+    portion = 0.99 
+    assert portion != 1
     save_path = "./vocab.pkl"
     # construct coco instance
     # Reference: <https://github.com/yunjey/pytorch-tutorial/blob/master/tutorials/03-advanced/image_captioning/build_vocab.py#L31>
@@ -83,6 +84,7 @@ if __name__ == "__main__":
     vocab.add_word('<<start>>')
     vocab.add_word('<<end>>')
     vocab.add_word('<<unknown>>')
+
     # Add the words to the vocabulary.
     for word in words:
         vocab.add_word(word)

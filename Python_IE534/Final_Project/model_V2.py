@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision.models as models
 from torch.nn.utils.rnn import pack_padded_sequence
+from torch.autograd import Variable
 
 
 class Encoder(nn.Module):
@@ -14,7 +15,8 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
         self.attention = attention
         self.enc_image_size = encoded_image_size
-        resnet = models.resnet101(pretrained=True)
+        # resnet = models.resnet101(pretrained=True)
+        resnet = models.resnet152(pretrained=True)
         if self.attention:
             # Remove linear and pool layers (since we're not doing classification)
             modules = list(resnet.children())[:-2]
@@ -66,8 +68,8 @@ class StatefulLSTM(nn.Module):
         batch_size = x.data.size()[0]
         if self.hidden is None:
             state_size = [batch_size, self.out_size]
-            self.cell = torch.zeros(state_size)
-            self.hidden = torch.zeros(state_size)
+            self.cell = Variable(torch.zeros(state_size)).cuda()
+            self.hidden = Variable(torch.zeros(state_size)).cuda()
         self.hidden, self.cell = self.lstm(x, (self.hidden, self.cell))
 
         return self.hidden
@@ -140,6 +142,7 @@ class Decoder(nn.Module):
                 for i, _ in enumerate(self.lstm_blocks):
                     self.lstm_blocks[i].reset_state()
 
+
     def forward(self, features, captions, lengths, train=True):
         """Decode image feature vectors and generates captions."""
         self.train = train
@@ -150,11 +153,11 @@ class Decoder(nn.Module):
             self.reset_state()
             outputs = []
             for i in range(no_of_timesteps):
-                h = self.lstm_block1(embeddings[:, i, :], train=train)
+                h = self.lstm_block1(embeddings[:, i, :], train = train) 
                 #print('h shape', h.shape)
                 if self.num_layers >= 2:
                     for i, _ in enumerate(self.lstm_blocks):
-                        h = self.lstm_blocks[i](h, train=train)
+                        h = self.lstm_blocks[i](h, train = train)
                 #print('h shape2', h.shape)
                 outputs.append(h)
 
@@ -162,17 +165,17 @@ class Decoder(nn.Module):
             # outputs = outputs.permute(1, 2, 0)  # (batch_size,features,time_steps) [3, 256, 17]
 
             # Jazzik Nov. 18, 12:16pm
-            outputs = outputs.permute(1, 0, 2)  # (batch_size, time_steps, features)
+            outputs = outputs.permute(1, 0, 2) # (batch_size, time_steps, features)
             packed_outputs = []
             for i in range(outputs.shape[0]):
                 packed_outputs.append(outputs[i][:lengths[i]])
             packed_outputs = torch.cat(packed_outputs, 0)
-
+ 
             return self.linear(packed_outputs)
             #h = self.dropout(h)
 
         else:
-            # Test on batch_size = 3, embeddings.shape = [3, 17, 256], where
+            # Test on batch_size = 3, embeddings.shape = [3, 17, 256], where 
             # 17 the max(lengths) + 1
             packed = pack_padded_sequence(embeddings, lengths, batch_first=True)
             hiddens, _ = self.lstm(packed)
@@ -181,3 +184,17 @@ class Decoder(nn.Module):
             # hiddens[1] is the batch_size, tensor
             outputs = self.linear(hiddens[0])
             return outputs
+
+    def sample(self, features, states=None):
+        """Generate captions for given image features using greedy search."""
+        sampled_ids = []
+        inputs = features.unsqueeze(1)
+        for i in range(self.max_seg_length):
+            hiddens, states = self.lstm(inputs, states)          # hiddens: (batch_size, 1, hidden_size)
+            outputs = self.linear(hiddens.squeeze(1))            # outputs:  (batch_size, vocab_size)
+            _, predicted = outputs.max(1)                        # predicted: (batch_size)
+            sampled_ids.append(predicted)
+            inputs = self.embed(predicted)                       # inputs: (batch_size, embed_size)
+            inputs = inputs.unsqueeze(1)                         # inputs: (batch_size, 1, embed_size)
+        sampled_ids = torch.stack(sampled_ids, 1)                # sampled_ids: (batch_size, max_seq_length)
+        return sampled_ids
