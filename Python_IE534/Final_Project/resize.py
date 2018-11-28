@@ -7,6 +7,7 @@ def resize_image(image, size):
     """Resize an image to the given size."""
     return image.resize(size, Image.ANTIALIAS)
 
+
 def resize_images(image_dir, output_dir, size):
     """Resize the images in 'image_dir' and save into 'output_dir'."""
     if not os.path.exists(output_dir):
@@ -20,8 +21,9 @@ def resize_images(image_dir, output_dir, size):
                 img = resize_image(img, size)
                 img.save(os.path.join(output_dir, image), img.format)
         if (i+1) % 100 == 0:
-            print ("[{}/{}] Resized the images and saved into '{}'."
-                   .format(i+1, num_images, output_dir))
+            print("[{}/{}] Resized the images and saved into '{}'."
+                  .format(i+1, num_images, output_dir))
+
 
 def main(args):
     image_dir = args.image_dir
@@ -32,9 +34,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--image_dir', type=str, default='./data/train2014/',
+    parser.add_argument('--image_dir', type=str, default='/projects/training/bauh/COCO/train2014/',
                         help='directory for train images')
-    parser.add_argument('--output_dir', type=str, default='./data/resized2014/',
+    parser.add_argument('--output_dir', type=str, default='/u/training/tra380/final_project/resized_2014/',
                         help='directory for saving resized images')
     parser.add_argument('--image_size', type=int, default=256,
                         help='size for image after processing')

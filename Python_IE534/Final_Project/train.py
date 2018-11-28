@@ -10,11 +10,11 @@ Desscription:
 
 import torch
 import torchvision.transforms as transforms
-import os 
+import os
 import sys
 import pickle
 import numpy as np
-import nltk
+#import nltk
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 from generate_vocab_dict import Vocabulary
@@ -26,7 +26,6 @@ from torch.nn.utils.rnn import pack_padded_sequence
 import torch.nn as nn
 
 
-
 # Device configuration
 
 
@@ -35,9 +34,8 @@ def main():
     ##### arguments #####
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    PATH = os.getcwd()
-    image_dir = './data/resized2014/'
-    caption_path = './data/annotations/captions_train2014.json'
+    image_dir = './resized_2014/'
+    caption_path = '/projects/training/bauh/COCO/annotations/captions_train2014.json'
     vocab_path = './vocab.pkl'
     model_path = './model'
     crop_size = 224
@@ -48,7 +46,7 @@ def main():
     # Decoder
     embed_size = 512
     hidden_size = 512
-    num_epochs = 5
+    num_epochs = 15
     log_step = 10
     save_step = 1000
     ######################
@@ -57,11 +55,11 @@ def main():
         os.makedirs(model_path)
 
     # Image preprocessing, normalization for the pretrained resnet
-    transform = transforms.Compose([ 
+    transform = transforms.Compose([
         transforms.RandomCrop(crop_size),
-        transforms.RandomHorizontalFlip(), 
-        transforms.ToTensor(), 
-        transforms.Normalize((0.485, 0.456, 0.406), 
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize((0.485, 0.456, 0.406),
                              (0.229, 0.224, 0.225))])
 
     # Load vocabulary wrapper
@@ -72,10 +70,9 @@ def main():
     coco = CocoDataset(image_dir, caption_path, vocab, transform)
     dataLoader = torch.utils.data.DataLoader(coco, batch_size, shuffle=True, num_workers=4, collate_fn=coco_batch)
 
-
     # Declare the encoder decoder
     encoder = Encoder(embed_size=embed_size).to(device)
-    decoder = Decoder(embed_size=embed_size, hidden_size=hidden_size, vocab_size=len(vocab), num_layers=3).to(device)
+    decoder = Decoder(stateful=False, embed_size=embed_size, hidden_size=hidden_size, vocab_size=len(vocab), num_layers=3).to(device)
 
     # Loss and optimizer
     criterion = nn.CrossEntropyLoss()
@@ -113,6 +110,9 @@ def main():
                     model_path, 'decoder-{}-{}.ckpt'.format(epoch+1, i+1)))
                 torch.save(encoder.state_dict(), os.path.join(
                     model_path, 'encoder-{}-{}.ckpt'.format(epoch+1, i+1)))
+
+    torch.save(decoder.state_dict(), os.path.join(model_path, 'decoder-final.ckpt'))
+    torch.save(encoder.state_dict(), os.path.join(model_path, 'encoder-final.ckpt'))
 
 
 if __name__ == "__main__":

@@ -50,8 +50,8 @@ if __name__ == "__main__":
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    json = "/projects/training/bauh/COCO/annotations/captions_train2014.json"
-    portion = 0.995
+    json = "./data/annotations/captions_train2014.json"
+    portion = 0.99 
     assert portion != 1
     save_path = "./vocab.pkl"
     # construct coco instance
