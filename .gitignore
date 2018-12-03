@@ -35,3 +35,6 @@ Python_IE534/hw7/3a/language.model
 *.model
 Python_IE534/Final_Project/captions_train2014.json
 Python_IE534/Final_Project/vocab.pkl
+Python_IE534/Final_Project/*
+Python_STAT525/*
+Python_IE411/Untitled.ipynb

@@ -1,13 +1,14 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=16:xk
+#PBS -q high -l nodes=1:ppn=16:xk
 #PBS -N final_project_train
 #PBS -l walltime=48:00:00
 #PBS -e $PBS_JOBNAME.$PBS_JOBID.err
 #PBS -o $PBS_JOBNAME.$PBS_JOBID.out
 #PBS -m bea
 #PBS -M yutongd3@illinois.edu
-cd /u/training/tra380/final_project/
+cd /u/training/tra380/show-and-tell/
 . /opt/modules/default/init/bash
 module load bwpy/2.0.0-pre2
+pip3.5 install --user nltk
 module load cudatoolkit
-aprun -n 1 -N 1 python3.6 train.py
+aprun -n 1 -N 1 python train.py
