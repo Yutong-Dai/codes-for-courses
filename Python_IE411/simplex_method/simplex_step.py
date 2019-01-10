@@ -1,3 +1,12 @@
+'''
+File: simplex_step.py
+Author: Yutong Dai (rothdyt@gmail.com)
+File Created: Friday, 2018-12-07 21:59
+Last Modified: Saturday, 2018-12-15 00:57
+--------------------------------------------
+Desscription:
+'''
+
 from numpy.linalg import inv
 import numpy as np
 
@@ -82,8 +91,16 @@ def simplex_step(A, b, c, iB, iN, xB, irule=0, Binv=""):
         else:
             # minimal ratio test
             u = np.asarray(u).reshape(-1,)
+            # idx = np.asarray(np.argwhere(u > 0)).reshape(-1)
+            # delta = np.asarray(xB).reshape(-1)[idx] / u[idx]
+            temp = np.asarray(xB).reshape(-1)
+            delta = []
+            for i in range(len(temp)):
+                if u[i] > 0:
+                    delta.append(temp[i] / u[i])
+                else:
+                    delta.append(10000000)
             idx = np.asarray(np.argwhere(u > 0)).reshape(-1)
-            delta = np.asarray(xB).reshape(-1)[idx] / u[idx]
             l = np.argmin(delta)
             delta_ = delta[l]
             for i in range(A.shape[0]):
@@ -95,28 +112,34 @@ def simplex_step(A, b, c, iB, iN, xB, irule=0, Binv=""):
             istatus = 0
             iB[l] = j
             Binv = inv(A[:, iB])
+            iN = np.setdiff1d(range(A.shape[1]), iB)
             iB = iB + 1  # recover the index of basic variables
-            iN = np.setdiff1d(range(1, A.shape[1]+1), iB)
+            iN = iN + 1
+            #print(iB,iN)
+            #iN = np.setdiff1d(range(1, A.shape[1]+1), iB)
             return [istatus, iB, iN, xB, Binv]
     else:
         #print("reach optimal")
         istatus = -1
+        iN = np.setdiff1d(range(A.shape[1]), iB)
+        iB = iB + 1  # recover the index of basic variables
+        iN = iN + 1
         return [istatus, iB, iN, xB, Binv]
 
 
 if __name__ == "__main__":
     from numpy.linalg import norm
-    print("My Test Case:")
-    A1 = np.matrix([[1, 2,  2], [2, 1, 2], [2, 2,  1]], dtype=np.float64)
-    A = np.hstack((A1, np.eye(3)))
-    b = np.matrix([[20], [20], [20]], dtype=np.float64)
-    iN = [1, 2, 3]
-    iB = [4, 5, 6]
-    xB = np.matrix(np.copy(b))
-    c = np.matrix([[-10, -12, -12, 0, 0, 0, ]], dtype=np.float64)
-    irule = 0
-    [istatus, iB, iN, xB, Binv] = simplex_step(A, b, c, iB, iN, xB, irule=0)
-    print("Status:{} | Basic variable index:{} | Basic variable value:{} | Non-basic Variable:{} | B inverse: {}".format(istatus, iB, xB, iN, Binv))
+    # print("My Test Case:")
+    # A1 = np.matrix([[1, 2,  2], [2, 1, 2], [2, 2,  1]], dtype=np.float64)
+    # A = np.hstack((A1, np.eye(3)))
+    # b = np.matrix([[20], [20], [20]], dtype=np.float64)
+    # iN = [1, 2, 3]
+    # iB = [4, 5, 6]
+    # xB = np.matrix(np.copy(b))
+    # c = np.matrix([[-10, -12, -12, 0, 0, 0, ]], dtype=np.float64)
+    # irule = 0
+    # [istatus, iB, iN, xB, Binv] = simplex_step(A, b, c, iB, iN, xB, irule=0)
+    # print("Status:{} | Basic variable index:{} | Basic variable value:{} | Non-basic Variable:{} | B inverse: {}".format(istatus, iB, xB, iN, Binv))
     print("===============================")
     print("Test1.py")
     A1 = np.matrix([[1, 1,  1],
