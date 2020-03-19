@@ -61,7 +61,22 @@
     80-80-1       Fixed_Branching       Best_Estimate    9.390e+02   6642  
     80-80-1       Pseudocost_Branching  Depth_First      5.781e+02   4107  
     80-80-1       Pseudocost_Branching  Best_First       1.575e+02   1127  
-    80-80-1       Pseudocost_Branching  Best_Estimate    2.400e+02   1719  
-    80-85-2       Most_Fraction         Depth_First      2.251e+03  15289  
-    80-85-2       Most_Fraction         Best_First       1.036e+03   7011  
-    80-85-2       Most_Fraction         Best_Estimate    1.656e+03  11224  
+    80-80-1       Pseudocost_Branching  Best_Estimate    2.400e+02   1719 
+    80-85-2       Most_Fraction         Depth_First      2.251e+03  15289
+    80-85-2       Most_Fraction         Best_First       1.036e+03   7011
+    80-85-2       Most_Fraction         Best_Estimate    1.656e+03  11224
+    80-85-2       Fixed_Branching       Depth_First      1.430e+04  92531
+    80-85-2       Fixed_Branching       Best_First       3.166e+03  20765
+    80-85-2       Fixed_Branching       Best_Estimate    3.106e+03  20765
+    80-85-2       Pseudocost_Branching  Depth_First      2.359e+03  15799
+    80-85-2       Pseudocost_Branching  Best_First       6.796e+02   4567
+    80-85-2       Pseudocost_Branching  Best_Estimate    1.220e+03   8203
+    90-85-2       Most_Fraction         Depth_First      7.387e+03  44951
+    90-85-2       Most_Fraction         Best_First       3.071e+03  18747
+    90-85-2       Most_Fraction         Best_Estimate    3.912e+03  23861
+    90-85-2       Fixed_Branching       Depth_First      1.876e+04  110197
+    90-85-2       Fixed_Branching       Best_First       7.370e+03  44307
+    90-85-2       Fixed_Branching       Best_Estimate    1.435e+04  84203
+    90-85-2       Pseudocost_Branching  Depth_First      4.214e+03  25203
+    90-85-2       Pseudocost_Branching  Best_First       1.928e+03  11737
+    90-85-2       Pseudocost_Branching  Best_Estimate    3.411e+03  20835  
